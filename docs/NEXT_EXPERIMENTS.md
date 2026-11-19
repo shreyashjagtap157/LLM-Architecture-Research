@@ -12,7 +12,7 @@ Read [`PRIOR_ART_DYNAMIC_COMPUTE_AND_NGRAM_2026-11-19.md`](research/PRIOR_ART_DY
 
 The broad ideas of hashed n-gram lookup, context-aware gating and additive residual injection already exist in SCONE, Engram and 2026 follow-up work. This gate tests whether the project's specific compact/local variant delivers useful value under matched resource budgets; it does not presume novelty.
 
-- Start with `experiments/v11_prototypes/local_ngram_adapter.py` and its 19 synthetic tests. Treat this as a new reference prototype, not the unrecovered V11 implementation or a trained model.
+- Start with `experiments/v11_prototypes/local_ngram_adapter.py` and its 29 synthetic tests. Treat this as a new reference prototype, not the unrecovered V11 implementation or a trained model.
 - Run `experiments/v11_prototypes/audit_ngram_collisions.py` against a locally prepared, rights-cleared token-ID file. Record distinct n-grams, bucket occupancy, collision exposure by order, table bytes and estimated optimizer-state bytes. Test multiple table sizes before training. The utility is exact but O(unique n-gram types) in-memory; do not use it as a large-corpus streaming estimator.
 - Reconstruct the exact pair/N-gram adapter described in the session log. Preserve its source and math as an independent experiment profile.
 - Re-run the original tiny character task first for operator/metric continuity, with the same fixed data and split manifest.
@@ -81,6 +81,7 @@ The earlier session used the label “TSA”. A 2026 paper already names a close
 - Never use test metrics to select hyperparameters or checkpoint.
 - Never treat public availability as training-use permission.
 - Read `docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`. No candidate has been approved; metadata tags are not sufficient proof of source-level rights.
+- Prepare the pending `experiments/v11_prototypes/dataset_rights_manifest.template.json`. Run `dataset_rights_gate.py` for the exact intended use; the checker must fail closed while review is pending. A pass indicates that a human attestation is structurally present, not that the licence or review conclusion is legally correct.
 - Prefer a small, narrowly scoped source with an immutable revision and explicit permitted-use terms. Preserve source notices and hash all selected files before export.
 - For CDLA-Sharing, CC-BY-SA or GFDL candidates, obtain a legal review of attribution, ShareAlike, enhanced-data publication and model/checkpoint distribution implications before materialization.
 - For aggregated corpora, require item/subset-level upstream source and licence inventory; exclude sources with ambiguous rights instead of treating aggregate Apache/MIT metadata as a cure-all.

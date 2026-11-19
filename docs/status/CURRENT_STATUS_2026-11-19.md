@@ -74,8 +74,9 @@ The experiment plan now requires statistical n-gram and matched neural controls,
 The new `experiments/v11_prototypes/local_ngram_adapter.py` prototype computes causal hashed n-gram buckets from token prefixes and injects the looked-up representation through a context-dependent sigmoid gate and projected residual. It includes input/domain checks and handles empty sequences. The companion `audit_ngram_collisions.py` utility measures complete n-gram type collisions by order and estimates table, gradient and Adam-moment storage from a caller-supplied token-ID file; it stores unique n-grams in memory and is therefore intended for pilot-scale audits. The caller must provide already-causal hidden states; this module does not establish causality of the upstream network.
 
 Validation performed locally against an uploaded-bundle checkout:
-- Prototype tests: **19 passed**.
-- Collision/storage audit tests: included in the 19-test prototype suite; the audit tool has not yet been run against a corpus.
+- Prototype tests: **29 passed**.
+- Collision/storage audit tests: included in the 29-test prototype suite; the audit tool has not yet been run against a corpus.
+- Dataset rights gate: 10 tests cover approved/pending states, per-source licence evidence, intended-use restrictions, immutable revisions and privacy-review requirements. The tool only validates attestations and fails closed by default.
 - Existing v9 regression tests: **44 passed**.
 - Existing v9 artifact verifier: **137 checks passed**.
 - Environment: Python 3.13.5, PyTorch 2.10.0+cpu, pytest 9.0.2.
@@ -87,3 +88,8 @@ GitHub Actions run `44539198024` completed successfully on commit `bc56c68d12f08
 ## Dataset rights review — 2026-11-19
 
 A preliminary source-card/licence review is recorded in `docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`. It assessed TinyStories, WikiText, Open License Corpus/PubText, CuratedCorpus-5B and Kyoto-Corpus. None is approved for this project yet; no candidate was downloaded or trained on. TinyStories is tagged CDLA-Sharing-1.0; WikiText lists CC-BY-SA-3.0/GFDL; OLC's top-level Apache metadata coexists with source-specific CC-BY-SA subsets, a train-only repository split and an explicit residual-PII warning; CuratedCorpus-5B and Kyoto need stronger source-level rights/provenance checks. This is preliminary due diligence, not a legal opinion.
+
+
+## Dataset rights preflight — 2026-11-19
+
+Added `experiments/v11_prototypes/dataset_rights_gate.py` and a pending JSON manifest template. The preflight requires a full dataset commit SHA, hashes of the dataset-card/terms snapshots, per-included-source immutable identifiers and licence-evidence hashes, an approved reviewer/use record, and a separate approved privacy review. Its output is explicitly `ATTESTATIONS_PRESENT_FOR_REQUESTED_USE`, not legal clearance. The default template is pending and must fail closed. Local tests for this gate: 10 passed; total V11 prototype tests: 29 passed. The checker does not fetch datasets or validate the truth of human attestations.

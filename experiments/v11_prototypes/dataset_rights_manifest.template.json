@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "dataset": {
+    "repo_id": "OWNER/DATASET",
+    "configuration": "CONFIGURATION_NAME",
+    "revision": "0000000000000000000000000000000000000000",
+    "source_url": "https://huggingface.co/datasets/OWNER/DATASET",
+    "dataset_card_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "terms_snapshot_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "rights_review": {
+    "status": "pending",
+    "reviewer_id": "",
+    "reviewer_role": "",
+    "reviewed_at": "",
+    "jurisdiction_scope": "",
+    "decision_note": "",
+    "evidence_bundle_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "approved_uses": []
+  },
+  "source_inventory": [
+    {
+      "source_id": "SOURCE-001",
+      "included": true,
+      "upstream_uri": "",
+      "immutable_revision": "",
+      "license_id": "",
+      "license_evidence_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "rights_status": "pending",
+      "approved_uses": []
+    }
+  ],
+  "privacy_review": {
+    "status": "pending",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "report_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "retention_and_removal_plan": ""
+  }
+}

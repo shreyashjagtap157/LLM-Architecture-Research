@@ -10,6 +10,14 @@ All notable research/specification transitions are recorded here at a high level
 - Fixed bundle-clone synchronization instructions: a bundle clone already has an `origin`, so the GitHub URL must be configured with `git remote set-url`, not `git remote add`.
 - Revalidated the repository: 145 SHA-256 entries passed, 44 v9 tests passed, 137 pilot artifact checks passed, and dataset exporter help completed safely.
 
+## 2026-11-19 — Dataset rights preflight utility
+
+- Added a fail-closed manifest checker for immutable dataset revisions, dataset-card/terms hashes, every included upstream source and its own licence-evidence hash, specifically approved intended uses, reviewer identity and privacy-review evidence.
+- Added a default-pending JSON manifest template; it cannot pass until a human-reviewed record is complete.
+- Added 10 tests for pending/approved states, use restrictions, per-source evidence, duplicate source IDs, immutable revision format and privacy review.
+- The checker validates manifest structure and recorded attestations only; it does not interpret licences or provide legal clearance.
+- Total isolated V11 prototype tests: 29 passed locally.
+
 ## 2026-11-19 — Dataset rights and provenance review
 
 - Reviewed the current dataset cards and relevant licence text for TinyStories, WikiText, Open License Corpus/PubText, CuratedCorpus-5B and Kyoto-Corpus.

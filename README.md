@@ -20,7 +20,7 @@ This repository preserves the research progression from the original v2 synthesi
 7. [`NOTICE.md`](NOTICE.md) — data, source and licensing limitations.
 8. [`docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`](docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md) — candidate source/licence review; no dataset approved yet.
 8. [`docs/research/PRIOR_ART_DYNAMIC_COMPUTE_AND_NGRAM_2026-11-19.md`](docs/research/PRIOR_ART_DYNAMIC_COMPUTE_AND_NGRAM_2026-11-19.md) — prior-art comparison and research implications.
-9. [`experiments/v11_prototypes/README.md`](experiments/v11_prototypes/README.md) — scope, collision audit and limitations of the new isolated prototype.
+9. [`experiments/v11_prototypes/README.md`](experiments/v11_prototypes/README.md) — scope, collision audit, rights preflight and limitations of the new isolated prototype.
 
 ## Repository map
 
@@ -33,7 +33,7 @@ This repository preserves the research progression from the original v2 synthesi
 │   └── NEXT_EXPERIMENTS.md
 ├── experiments/
 │   ├── v9_character_pilot/            # runnable v9 code, reports, tests and checkpoints
-│   └── v11_prototypes/                # untrained, isolated research prototype and collision audit
+│   └── v11_prototypes/                # untrained adapter, collision audit and rights preflight
 ├── history/
 │   ├── v3 ... v8/                     # versioned architecture and audit history
 │   ├── v9/                            # v9 architecture, audits and reports
@@ -66,7 +66,7 @@ python prepare_hf_dataset.py --help
 # overwriting the current results/ outputs. Do not use it as a smoke/help command.
 ```
 
-The v9 test suite was executed while assembling this repository: **44 tests passed**. The v9 artifact verifier reported **137 checks passed**. The isolated V11 prototype suite currently has **19 synthetic tests**. These tests validate the prototype's local contracts, not model quality, the missing historical V11 dynamic-compute code, or real-corpus collision rates.
+The v9 test suite was executed while assembling this repository: **44 tests passed**. The v9 artifact verifier reported **137 checks passed**. The isolated V11 prototype suite currently has **29 synthetic tests**. These tests validate the prototype's local contracts, not model quality, the missing historical V11 dynamic-compute code, or real-corpus collision rates.
 
 See [`experiments/v9_character_pilot/TRAINING_PILOT_REPORT_v9.md`](experiments/v9_character_pilot/TRAINING_PILOT_REPORT_v9.md) for the exact experiment scope, configurations, metrics and limitations.
 

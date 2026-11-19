@@ -26,7 +26,7 @@
 - The v9 miniature pilot source, training/evaluation scripts, dataset exporter, configs, reports, checks, checkpoints and original inputs are present under `experiments/v9_character_pilot/` and `inputs/`.
 - The v9 tests were run during packaging: `44 passed`.
 - `verify_pilot_artifacts.py` ran during packaging and reported `137` checks passed.
-- New isolated prototype: `experiments/v11_prototypes/local_ngram_adapter.py`, with `19` synthetic-tensor tests passing locally. This is newly authored research code, not recovered V11 source and not trained.
+- New isolated prototype: `experiments/v11_prototypes/local_ngram_adapter.py`, with `29` synthetic-tensor tests passing locally. This is newly authored research code, not recovered V11 source and not trained.
 - A fresh, source-identified v9 repeat completed on 2026-11-19 at 07:52:46 UTC: two seeds × three profiles, 500 steps/run. It wrote six checkpoints and recorded trainer, exporter and dataset-manifest SHA-256 values in `results/pilot_results.json`; the aggregate metrics match the recorded pilot result.
 - The uploaded bundle's five-commit history is present in GitHub `main`; the original bundle tip `304aa8e65c1a1ad36c59e404c082b11d0f4f771f` is an ancestor of the verified remote head.
 - The GitHub `main` file tree is byte-for-byte content-identical at the Git object level to the uploaded bundle tree. Two intervening commits added and then removed an unrelated AetherOS prompt; it is absent from the final tree and history was preserved.
@@ -53,10 +53,11 @@ The recovered runtime contained the v10 specification and the v9 pilot archive, 
 4. Recover/implement the pair-N-gram adapter, compare against a parameter-matched wider FFN, and test a fixed-budget hashed/factorized subword version.
 5. Read `docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`; do not assume any candidate's aggregate licence tag clears every underlying source or intended model release.
 6. Obtain a complete immutable dataset revision with source-level rights cleared for the intended training uses. Do not train commercially on the bundled excerpt without an independent rights review.
-7. Run `experiments/v11_prototypes/audit_ngram_collisions.py` on a locally prepared, rights-cleared token-ID file. Record per-order collisions and table/optimizer memory estimates; note the tool's O(unique n-gram types) memory use.
-8. Benchmark the untrained adapter against statistical n-gram and parameter-matched neural controls. Do not treat unit tests or collision statistics as model-quality evidence.
-9. Train a small subword example model only after data/compute constraints are specified. Keep full-model scale-up blocked until matched ablations demonstrate a quality/efficiency improvement.
-10. For dynamic compute, optimize actual target-hardware kernels and report wall-clock latency/throughput/energy—not only skipped theoretical token-steps.
+7. Use `experiments/v11_prototypes/dataset_rights_manifest.template.json` to prepare a pending rights manifest. The default must fail closed; only a human-reviewed manifest may pass the preflight, and a pass is not legal clearance.
+8. Run `experiments/v11_prototypes/audit_ngram_collisions.py` on a locally prepared, rights-cleared token-ID file. Record per-order collisions and table/optimizer memory estimates; note the tool's O(unique n-gram types) memory use.
+9. Benchmark the untrained adapter against statistical n-gram and parameter-matched neural controls. Do not treat unit tests or collision statistics as model-quality evidence.
+10. Train a small subword example model only after data/compute constraints are specified. Keep full-model scale-up blocked until matched ablations demonstrate a quality/efficiency improvement.
+11. For dynamic compute, optimize actual target-hardware kernels and report wall-clock latency/throughput/energy—not only skipped theoretical token-steps.
 
 ## GitHub publication and safety
 
