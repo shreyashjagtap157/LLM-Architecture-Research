@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+.DS_Store
+Thumbs.db
+*.prof
+*.trace
+# Keep committed pilot checkpoints/results; ignore only newly generated scratch runs.
+experiments/v9_character_pilot/results/reproduction_run/
+experiments/v9_character_pilot/results/voc_reproduction_run/
