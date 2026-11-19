@@ -71,13 +71,14 @@ The experiment plan now requires statistical n-gram and matched neural controls,
 
 ## Prototype implementation and validation update — 2026-11-19
 
-The new `experiments/v11_prototypes/local_ngram_adapter.py` prototype computes causal hashed n-gram buckets from token prefixes and injects the looked-up representation through a context-dependent sigmoid gate and projected residual. It includes input/domain checks and handles empty sequences. The caller must provide already-causal hidden states; this module does not establish causality of the upstream network.
+The new `experiments/v11_prototypes/local_ngram_adapter.py` prototype computes causal hashed n-gram buckets from token prefixes and injects the looked-up representation through a context-dependent sigmoid gate and projected residual. It includes input/domain checks and handles empty sequences. The companion `audit_ngram_collisions.py` utility measures complete n-gram type collisions by order and estimates table, gradient and Adam-moment storage from a caller-supplied token-ID file; it stores unique n-grams in memory and is therefore intended for pilot-scale audits. The caller must provide already-causal hidden states; this module does not establish causality of the upstream network.
 
 Validation performed locally against an uploaded-bundle checkout:
-- Prototype tests: **13 passed**.
+- Prototype tests: **19 passed**.
+- Collision/storage audit tests: included in the 19-test prototype suite; the audit tool has not yet been run against a corpus.
 - Existing v9 regression tests: **44 passed**.
 - Existing v9 artifact verifier: **137 checks passed**.
 - Environment: Python 3.13.5, PyTorch 2.10.0+cpu, pytest 9.0.2.
-- No corpus training, checkpoint creation, collision-rate measurement, latency benchmark, or hardware optimization was performed.
+- No corpus training, checkpoint creation, dataset collision-rate measurement, latency benchmark, or hardware optimization was performed. The collision-audit utility has only synthetic unit-test coverage so far.
 
 GitHub Actions is configured to run the v9 regression tests and the new prototype tests, verify the checksum manifest and preserved v9 artifacts, and refresh the manifest on `main`. The action result for this new commit must be checked before treating CI validation as passed.

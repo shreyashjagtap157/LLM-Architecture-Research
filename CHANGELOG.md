@@ -10,6 +10,14 @@ All notable research/specification transitions are recorded here at a high level
 - Fixed bundle-clone synchronization instructions: a bundle clone already has an `origin`, so the GitHub URL must be configured with `git remote set-url`, not `git remote add`.
 - Revalidated the repository: 145 SHA-256 entries passed, 44 v9 tests passed, 137 pilot artifact checks passed, and dataset exporter help completed safely.
 
+## 2026-11-19 — N-gram collision and storage audit utility
+
+- Added `audit_ngram_collisions.py` to measure complete n-gram type collisions, bucket occupancy and approximate table/gradient/Adam storage from a caller-provided token-ID file.
+- Added six synthetic tests for collision-free and forced-collision cases, complete-ngram handling, storage arithmetic, token-ID validation and JSON output privacy.
+- Expanded the isolated prototype suite to 19 passing tests; existing v9 regression tests remain 44/44 and the artifact verifier remains 137/137.
+- Documented that the audit is exact but uses O(unique n-gram types) memory and has not yet been run on a rights-cleared corpus.
+- Updated CI to run the full prototype test directory.
+
 ## 2026-11-19 — Prior-art review and revised experiment gates
 
 - Added a sourced comparison of 2025–2026 token-adaptive computation and n-gram-memory prior art.

@@ -23,3 +23,21 @@ python -m pytest -q experiments/v11_prototypes/tests/test_local_ngram_adapter.py
 ```
 
 The next gate is to measure distinct n-gram collisions and table footprint on a rights-cleared dataset, then compare against statistical n-gram and parameter-matched neural controls under validation-only selection. Do not promote this prototype based on unit tests alone.
+
+
+## `audit_ngram_collisions.py`
+
+This utility accepts a local whitespace-separated file of integer token IDs and reports exact complete-n-gram type collisions per order, bucket occupancy, collision exposure and approximate embedding-table storage. It does not print token IDs or source text. Only run it on a dataset you have already reviewed and cleared for the intended use.
+
+Example:
+
+```bash
+python experiments/v11_prototypes/audit_ngram_collisions.py \
+  --token-ids token_ids.txt --vocab-size 32000 --table-size 65536 \
+  --orders 2 3 4 --d-model 512 --dtype-bytes 2 \
+  --optimizer-state-bytes-per-param 4 --output reports/ngram-audit.json
+```
+
+The report counts complete n-grams only and uses the same polynomial hash constants and modulo-bucket mapping as the prototype adapter. Memory estimates cover embedding-table weights, gradients and two Adam moments only; they exclude projections, activations, temporary audit structures, allocator overhead and runtime state. The audit stores distinct n-gram types in memory, so its memory use is O(number of unique n-gram types); it is a pilot-scale exact audit, not a scalable streaming estimator. A supplied `--max-tokens` audits only the leading prefix and must be recorded as such.
+
+The audit is diagnostic, not a training or quality benchmark. It has only synthetic tests at this stage; no real-corpus collision rate has been measured.

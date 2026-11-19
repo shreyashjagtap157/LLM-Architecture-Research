@@ -70,7 +70,7 @@ jobs:
           python -m pytest -q
           experiments/v9_character_pilot/test_dataset_pipeline.py
           experiments/v9_character_pilot/test_validate_architecture_package.py
-          experiments/v11_prototypes/tests/test_local_ngram_adapter.py
+          experiments/v11_prototypes/tests
 
       - name: Verify preserved pilot artifacts
         run: python experiments/v9_character_pilot/verify_pilot_artifacts.py

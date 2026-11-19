@@ -1,5 +1,9 @@
 # Validation report — LLM Architecture Research snapshot 2026-11-19
 
+## Current repository update — 2026-11-19
+
+The repository is published on GitHub `main`. The original bundle history was preserved. The current isolated hashed n-gram adapter and collision-audit utilities passed **19 synthetic tests** locally; this does not validate model quality or reproduce the missing historical V11 code. The original v9 regression suite passed **44 tests**, and the v9 artifact verifier passed **137 checks**. GitHub Actions has passed on the initial prototype commit; the expanded 19-test CI run for the collision audit must be checked separately.
+
 ## Snapshot identity
 
 - Repository: `LLM-Architecture-Research`
@@ -7,7 +11,7 @@
 - Final snapshot commit for this report: recorded in Git at packaging time; inspect with `git rev-parse HEAD`.
 - Repository content checksum manifest: `SHA256SUMS.txt` (144 payload files; excludes itself and `.git/`).
 - Local Git history: four commits, beginning with the assembled research import. No upstream Git history was available in the recovered workspace.
-- Remote: none configured.
+- Canonical remote: `https://github.com/shreyashjagtap157/LLM-Architecture-Research.git` (`main`).
 
 ## Environment
 
@@ -55,6 +59,7 @@ The Git bundle preserves the four-commit local history. The ZIP contains the sou
 - No CUDA/GPU kernel benchmark or multi-GPU training.
 - No end-to-end V11 dynamic-computation reproduction.
 - No measured production usefulness, frontier capability, or SOTA superiority.
-- No GitHub push; publication blocker and exact steps are documented in `PUBLISHING.md`.
+- GitHub publication is complete; synchronization and fast-forward instructions are documented in `PUBLISHING.md`.
+- The new prototype and collision-audit suite is synthetic-only; no real-corpus collision audit or training has been performed.
 
 The current architecture specification recovered in this repository is v10. The runnable code baseline is the v9 miniature character-model pilot. Dynamic-computation findings from the 18–19 November session are documented as session-reported where source-level artifacts were unavailable; they must be reimplemented and independently reproduced before being treated as validated results.
