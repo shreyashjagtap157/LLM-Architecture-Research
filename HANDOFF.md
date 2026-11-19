@@ -3,9 +3,10 @@
 **Snapshot date:** 19 November 2026  
 **Current complete architecture specification:** v10  
 **Runnable implementation baseline:** v9 character-level pilot  
-**Repository branch:** `main`  
-**Remote:** none configured  
-**Publication:** local ZIP and Git bundle prepared; GitHub push not completed because repository creation/push is unavailable through the connected tools.
+- **Repository branch:** `main`
+- **Canonical remote:** `https://github.com/shreyashjagtap157/LLM-Architecture-Research.git`
+- **Verified GitHub head (2026-11-19):** `d54ba5bd1e980fb40b4e80ae3758fe6b41548799`
+- **Tree parity:** exact match with uploaded bundle tree `610f38e65b8e9042b39f7ca548c79a6197c12f6f` (145 tracked files).
 
 ## Read first
 
@@ -25,7 +26,9 @@
 - The v9 tests were run during packaging: `44 passed`.
 - `verify_pilot_artifacts.py` ran during packaging and reported `137` checks passed.
 - A fresh, source-identified v9 repeat completed on 2026-11-19 at 07:52:46 UTC: two seeds × three profiles, 500 steps/run. It wrote six checkpoints and recorded trainer, exporter and dataset-manifest SHA-256 values in `results/pilot_results.json`; the aggregate metrics match the recorded pilot result.
-- A new local Git repository was initialized on `main`, with documented commits and no remote.
+- The uploaded bundle's five-commit history is present in GitHub `main`; the original bundle tip `304aa8e65c1a1ad36c59e404c082b11d0f4f771f` is an ancestor of the verified remote head.
+- The GitHub `main` file tree is byte-for-byte content-identical at the Git object level to the uploaded bundle tree. Two intervening commits added and then removed an unrelated AetherOS prompt; it is absent from the final tree and history was preserved.
+- Local verification on 2026-11-19: 145 SHA-256 manifest entries passed; v9 test suite 44/44 passed; artifact verifier 137/137 checks passed; dataset-exporter `--help` returned safely.
 
 ## Reported in the conversation, but not independently replayable from this bundle
 
@@ -50,6 +53,6 @@ The recovered runtime contained the v10 specification and the v9 pilot archive, 
 6. Train a small subword example model only after data/compute constraints are specified. Keep full-model scale-up blocked until matched ablations demonstrate a quality/efficiency improvement.
 7. For dynamic compute, optimize actual target-hardware kernels and report wall-clock latency/throughput/energy—not only skipped theoretical token-steps.
 
-## GitHub publication
+## GitHub publication and safety
 
-See `PUBLISHING.md`. Do not push into the existing `Dynamic-Neural-Computing` project. The intended target is a new repository, `shreyashjagtap157/LLM-Architecture-Research`; it must be created empty in the GitHub UI before the included Git bundle can be pushed.
+The intended target now exists and contains the project on `main`; publication is complete. See `PUBLISHING.md` for safe synchronization instructions. Do not push into the separate `Dynamic-Neural-Computing` project. GitHub currently reports this repository as public, while `NOTICE.md` still records unresolved data/source redistribution rights. Treat visibility as an open publication-risk decision; no rights clearance is implied by the successful push.

@@ -1,0 +1,50 @@
+name: Research artifact validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  v9-reference-validation:
+    name: Validate preserved v9 reference artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: |
+            experiments/v9_character_pilot/requirements.txt
+            experiments/v9_character_pilot/pilot_requirements.txt
+
+      - name: Install reference-pilot dependencies
+        run: >-
+          python -m pip install
+          -r experiments/v9_character_pilot/requirements.txt
+          -r experiments/v9_character_pilot/pilot_requirements.txt
+          pytest
+
+      - name: Verify repository checksums
+        run: sha256sum --check SHA256SUMS.txt
+
+      - name: Run v9 regression tests
+        run: >-
+          python -m pytest -q
+          experiments/v9_character_pilot/test_dataset_pipeline.py
+          experiments/v9_character_pilot/test_validate_architecture_package.py
+
+      - name: Verify preserved pilot artifacts
+        run: python experiments/v9_character_pilot/verify_pilot_artifacts.py
+
+      - name: Verify safe dataset-exporter CLI help
+        run: python experiments/v9_character_pilot/prepare_hf_dataset.py --help

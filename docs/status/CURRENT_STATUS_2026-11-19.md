@@ -45,9 +45,11 @@ The old generated handoff drafts are preserved in `history/session_handoffs/` fo
 - Local execution: Python 3.13.5, PyTorch 2.10.0+cpu; CUDA unavailable.
 - Note: `train_pilot.py` does not implement `--help`; invoking it starts its full six-run experiment and overwrites files under `results/`. This behaviour was observed during packaging and is documented; do not run it casually.
 - Remote Hugging Face Jobs attempt returned HTTP 402 Payment Required; no paid job was created.
-- GitHub target `shreyashjagtap157/LLM-Architecture-Research` did not exist when checked.
-- Connected GitHub tools did not expose repository creation or authenticated `git push`; no local `gh` CLI or GitHub credentials were available.
-- Existing `shreyashjagtap157/Dynamic-Neural-Computing` is a separate project and was not modified.
+- GitHub publication is now complete. On 2026-11-19, the GitHub API reported `main` at `d54ba5bd1e980fb40b4e80ae3758fe6b41548799`.
+- The remote root tree SHA (`610f38e65b8e9042b39f7ca548c79a6197c12f6f`) exactly matches the uploaded bundle's root tree; all 145 tracked entries are present without content drift.
+- GitHub history contains the five original bundle commits plus an add/remove pair for an unrelated AetherOS prompt and a merge commit. The prompt is absent from the current tree; no history rewrite was performed.
+- GitHub reports the repository as public. This conflicts with the conservative recommendation in `PUBLISHING.md` while redistribution rights remain unresolved; private visibility is recommended until human review is complete.
+- The separate `shreyashjagtap157/Dynamic-Neural-Computing` project was not modified.
 
 ## Status labels
 
@@ -55,3 +57,7 @@ The old generated handoff drafts are preserved in `history/session_handoffs/` fo
 - **Session-reported:** results were stated in the conversation but their exact raw artifacts are absent here.
 - **Not demonstrated:** no experiment or external validation supports the claim.
 - **Blocked:** current compute, data rights, network or publishing capability prevents completion.
+
+## Repository synchronization verification — 2026-11-19
+
+The published `main` tree has been compared with the supplied Git bundle by root Git tree object ID. The matching tree SHA is stronger than a filename-only comparison: it identifies the same complete tree of paths, modes and blob object IDs. The local verification run also reported 145/145 SHA-256 manifest entries passing, 44/44 v9 tests passing, and 137/137 pilot artifact checks passing. These checks do not validate the absent V11 dynamic-compute implementation or clear third-party data rights.

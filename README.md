@@ -77,6 +77,10 @@ See [`experiments/v9_character_pilot/TRAINING_PILOT_REPORT_v9.md`](experiments/v
 
 ## Git and publication state
 
-This snapshot has a newly initialized local Git history on `main`. No pre-existing local Git history was available in the recovered work directory. The repository has no remote configured. A Git bundle and source ZIP are supplied alongside this directory; see [`PUBLISHING.md`](PUBLISHING.md).
+The canonical remote is [`shreyashjagtap157/LLM-Architecture-Research`](https://github.com/shreyashjagtap157/LLM-Architecture-Research), with `main` as its default branch. GitHub's `main` ref was verified at commit `d54ba5bd1e980fb40b4e80ae3758fe6b41548799` on 2026-11-19. Its root tree is `610f38e65b8e9042b39f7ca548c79a6197c12f6f`, exactly matching the uploaded bundle's `main` tree. This establishes content identity for all **145 tracked files**; the remote history retains the five original bundle commits.
 
-The GitHub account owner is `shreyashjagtap157`. The intended new repository name is `LLM-Architecture-Research`. It was checked and did not exist at packaging time. The connected GitHub interface available in this session does not expose repository creation or authenticated `git push`, and no local GitHub CLI credentials were present. Therefore **no remote push has been performed**. The unrelated existing `Dynamic-Neural-Computing` repository was not modified.
+Two later commits briefly added and then removed an unrelated AetherOS prompt. The current `main` tree matches the original bundle exactly, so that prompt is not present in the published file tree. The commits remain in history; history was not rewritten.
+
+**Visibility warning:** GitHub reported this repository as **public** at the last check. The repository intentionally has no blanket licence, and `NOTICE.md` records unresolved redistribution/training-use questions for supplied inputs and the Tiny Shakespeare transcription. Public visibility is therefore not equivalent to rights clearance. Review those notices before further distribution or commercial use; consider making the repository private until the rights review is complete.
+
+For clone, bundle, and push instructions, see [`PUBLISHING.md`](PUBLISHING.md). The bundle is a historical snapshot, not a substitute for fetching the current remote `main` before making new commits.
