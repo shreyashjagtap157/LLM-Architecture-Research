@@ -45,9 +45,8 @@ The old generated handoff drafts are preserved in `history/session_handoffs/` fo
 - Local execution: Python 3.13.5, PyTorch 2.10.0+cpu; CUDA unavailable.
 - Note: `train_pilot.py` does not implement `--help`; invoking it starts its full six-run experiment and overwrites files under `results/`. This behaviour was observed during packaging and is documented; do not run it casually.
 - Remote Hugging Face Jobs attempt returned HTTP 402 Payment Required; no paid job was created.
-- GitHub publication is now complete. On 2026-11-19, the GitHub API reported `main` at `d54ba5bd1e980fb40b4e80ae3758fe6b41548799`.
-- The remote root tree SHA (`610f38e65b8e9042b39f7ca548c79a6197c12f6f`) exactly matches the uploaded bundle's root tree; all 145 tracked entries are present without content drift.
-- GitHub history contains the five original bundle commits plus an add/remove pair for an unrelated AetherOS prompt and a merge commit. The prompt is absent from the current tree; no history rewrite was performed.
+- GitHub publication is complete. The branch was rechecked at `c3b6df779becdd7dcc58e776e1f6cd7f672e2739` before the current research update.
+- The published `main` tree was verified against the supplied Git bundle by root Git tree object ID. The matching pre-update root tree SHA was `610f38e65b8e9042b39f7ca548c79a6197c12f6f` and contained 145 tracked entries; the publication/correction commit preserves the original five-commit history.
 - GitHub reports the repository as public. This conflicts with the conservative recommendation in `PUBLISHING.md` while redistribution rights remain unresolved; private visibility is recommended until human review is complete.
 - The separate `shreyashjagtap157/Dynamic-Neural-Computing` project was not modified.
 
@@ -61,3 +60,9 @@ The old generated handoff drafts are preserved in `history/session_handoffs/` fo
 ## Repository synchronization verification — 2026-11-19
 
 The published `main` tree has been compared with the supplied Git bundle by root Git tree object ID. The matching tree SHA is stronger than a filename-only comparison: it identifies the same complete tree of paths, modes and blob object IDs. The local verification run also reported 145/145 SHA-256 manifest entries passing, 44/44 v9 tests passing, and 137/137 pilot artifact checks passing. These checks do not validate the absent V11 dynamic-compute implementation or clear third-party data rights.
+
+## Prior-art review — 2026-11-19
+
+A repository-level literature review was added at `docs/research/PRIOR_ART_DYNAMIC_COMPUTE_AND_NGRAM_2026-11-19.md`. It identifies direct prior art for token-wise residual gating/adaptive depth (including a paper explicitly named Token-Selective Attention) and hashed n-gram memory with context-aware residual injection. Accordingly, the earlier session label is retained historically as `session_tsa`; new artefacts must distinguish it from the paper's `tsa_2605` method. Pair/N-gram work remains the first reproduction hypothesis but is not treated as a broad novelty claim.
+
+The experiment plan now requires statistical n-gram and matched neural controls, validation-only selection and one sealed test evaluation, held-out complexity/length generalization, routing stability and budget reliability, and safety evaluation separated between prompt prefill and answer generation. These are documented gates; no V11 implementation or new model training has been claimed in this commit. V11 source/checkpoints/raw manifests remain absent, so session metrics are still session-reported.

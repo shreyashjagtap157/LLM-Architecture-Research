@@ -10,6 +10,14 @@ All notable research/specification transitions are recorded here at a high level
 - Fixed bundle-clone synchronization instructions: a bundle clone already has an `origin`, so the GitHub URL must be configured with `git remote set-url`, not `git remote add`.
 - Revalidated the repository: 145 SHA-256 entries passed, 44 v9 tests passed, 137 pilot artifact checks passed, and dataset exporter help completed safely.
 
+## 2026-11-19 — Prior-art review and revised experiment gates
+
+- Added a sourced comparison of 2025–2026 token-adaptive computation and n-gram-memory prior art.
+- Recorded the naming collision between the session's “TSA” label and the published Token-Selective Attention paper; future experiment artefacts distinguish `session_tsa` from `tsa_2605`.
+- Reframed pair/N-gram work as a reproduction/efficiency hypothesis, not a broad novelty claim; added hashed lookup, statistical n-gram, matched parameter/compute and memory controls.
+- Added held-out-complexity, route-stability, budget-reliability and safety evaluations separated by prompt-prefill and answer-generation phases.
+- Preserved all earlier session results as session-reported because V11 source and raw run artefacts remain absent.
+
 ## 2026-11-19 — Research repository snapshot
 
 - Consolidated v3–v9 architecture specifications, audits, changelogs, contracts, validation tooling and original inputs.

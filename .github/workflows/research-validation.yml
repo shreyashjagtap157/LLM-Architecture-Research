@@ -14,6 +14,8 @@ jobs:
     name: Validate preserved v9 reference artifacts
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -33,6 +35,32 @@ jobs:
           -r experiments/v9_character_pilot/requirements.txt
           -r experiments/v9_character_pilot/pilot_requirements.txt
           pytest
+
+      - name: Rebuild and commit SHA-256 manifest on main
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import subprocess
+          from pathlib import Path
+
+          tracked = subprocess.check_output(["git", "ls-files", "-z"]).split(b"\0")
+          paths = sorted(path.decode("utf-8") for path in tracked if path and path != b"SHA256SUMS.txt")
+          rows = []
+          for name in paths:
+              path = Path(name)
+              rows.append(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {name}")
+          Path("SHA256SUMS.txt").write_text("\n".join(rows) + "\n", encoding="utf-8")
+          print(f"Generated checksum manifest for {len(rows)} tracked files")
+          PY
+          if [[ "${GITHUB_EVENT_NAME}" == "push" && "${GITHUB_REF}" == "refs/heads/main" ]] && ! git diff --quiet -- SHA256SUMS.txt; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add SHA256SUMS.txt
+            git commit -m "chore: refresh SHA-256 manifest"
+            git push origin HEAD:main
+          fi
 
       - name: Verify repository checksums
         run: sha256sum --check SHA256SUMS.txt
