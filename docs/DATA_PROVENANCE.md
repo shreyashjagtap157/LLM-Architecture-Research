@@ -15,7 +15,9 @@ The excerpt is preserved at `experiments/v9_character_pilot/tinyshakespeare_30k.
 
 ## Other dataset candidates
 
-WikiText-2 was considered, but no full remote download/training run was completed. Its repository displays multiple licence tags that require human review against its dataset card and source terms. The v9 report has direct source links and additional detail.
+A structured candidate/source review was completed on 2026-11-19 in `docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`. Candidates reviewed include TinyStories (CDLA-Sharing-1.0), WikiText (CC-BY-SA-3.0/GFDL), Open License Corpus/PubText (aggregate Apache metadata with source-specific licence categories and PII caveats), CuratedCorpus-5B (Apache metadata but insufficient source-level provenance), and Kyoto-Corpus (aggregate MIT metadata over multiple upstream datasets). **None is approved for this project yet.** No candidate dataset was downloaded or trained on as part of this review.
+
+The review records terms/risks and a required acceptance manifest. Re-check the full immutable revision, every included subset's upstream licence, data-protection obligations and the intended commercial/checkpoint distribution use before selecting any candidate. A top-level repository licence tag is not, by itself, a source-rights audit.
 
 ## V11 dynamic-compute session data
 
@@ -32,4 +34,4 @@ Before official or commercial training, record:
 - deduplication, contamination and benchmark-exposure controls;
 - processing code and dependency hashes.
 
-Public download availability does not establish permission for a particular training or redistribution use.
+Public download availability does not establish permission for a particular training or redistribution use. The candidate status and source-by-source due-diligence requirements are recorded in `docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`.

@@ -10,6 +10,12 @@ All notable research/specification transitions are recorded here at a high level
 - Fixed bundle-clone synchronization instructions: a bundle clone already has an `origin`, so the GitHub URL must be configured with `git remote set-url`, not `git remote add`.
 - Revalidated the repository: 145 SHA-256 entries passed, 44 v9 tests passed, 137 pilot artifact checks passed, and dataset exporter help completed safely.
 
+## 2026-11-19 — Dataset rights and provenance review
+
+- Reviewed the current dataset cards and relevant licence text for TinyStories, WikiText, Open License Corpus/PubText, CuratedCorpus-5B and Kyoto-Corpus.
+- Recorded source-level, ShareAlike, PII, validation/test and aggregate-metadata risks in `docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`.
+- No candidate was approved; no corpus was downloaded or used for training. The project remains synthetic-test-only pending immutable revision and rights approval.
+
 ## 2026-11-19 — N-gram collision and storage audit utility
 
 - Added `audit_ngram_collisions.py` to measure complete n-gram type collisions, bucket occupancy and approximate table/gradient/Adam storage from a caller-provided token-ID file.

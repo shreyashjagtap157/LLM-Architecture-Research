@@ -81,4 +81,9 @@ Validation performed locally against an uploaded-bundle checkout:
 - Environment: Python 3.13.5, PyTorch 2.10.0+cpu, pytest 9.0.2.
 - No corpus training, checkpoint creation, dataset collision-rate measurement, latency benchmark, or hardware optimization was performed. The collision-audit utility has only synthetic unit-test coverage so far.
 
-GitHub Actions is configured to run the v9 regression tests and the new prototype tests, verify the checksum manifest and preserved v9 artifacts, and refresh the manifest on `main`. The action result for this new commit must be checked before treating CI validation as passed.
+GitHub Actions run `44539198024` completed successfully on commit `bc56c68d12f083a2ad025761d5905950f69d1fbb`: the 19-test V11 prototype suite, 44-test v9 regression suite, 137-check v9 artifact verifier, checksum verification and dataset-exporter CLI check all passed. The workflow refreshed the manifest and advanced `main` to `113c4f8e132a2dd6ab7e735152894034a20addb0`. At that verified head, `SHA256SUMS.txt` contained 154 entries including the adapter, collision audit and tests.
+
+
+## Dataset rights review — 2026-11-19
+
+A preliminary source-card/licence review is recorded in `docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`. It assessed TinyStories, WikiText, Open License Corpus/PubText, CuratedCorpus-5B and Kyoto-Corpus. None is approved for this project yet; no candidate was downloaded or trained on. TinyStories is tagged CDLA-Sharing-1.0; WikiText lists CC-BY-SA-3.0/GFDL; OLC's top-level Apache metadata coexists with source-specific CC-BY-SA subsets, a train-only repository split and an explicit residual-PII warning; CuratedCorpus-5B and Kyoto need stronger source-level rights/provenance checks. This is preliminary due diligence, not a legal opinion.

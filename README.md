@@ -18,6 +18,7 @@ This repository preserves the research progression from the original v2 synthesi
 5. [`docs/research/EXPERIMENTAL_REVIEW.md`](docs/research/EXPERIMENTAL_REVIEW.md) — interpretation and validity review.
 6. [`docs/NEXT_EXPERIMENTS.md`](docs/NEXT_EXPERIMENTS.md) — recommended experimental order.
 7. [`NOTICE.md`](NOTICE.md) — data, source and licensing limitations.
+8. [`docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`](docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md) — candidate source/licence review; no dataset approved yet.
 8. [`docs/research/PRIOR_ART_DYNAMIC_COMPUTE_AND_NGRAM_2026-11-19.md`](docs/research/PRIOR_ART_DYNAMIC_COMPUTE_AND_NGRAM_2026-11-19.md) — prior-art comparison and research implications.
 9. [`experiments/v11_prototypes/README.md`](experiments/v11_prototypes/README.md) — scope, collision audit and limitations of the new isolated prototype.
 
@@ -68,6 +69,10 @@ python prepare_hf_dataset.py --help
 The v9 test suite was executed while assembling this repository: **44 tests passed**. The v9 artifact verifier reported **137 checks passed**. The isolated V11 prototype suite currently has **19 synthetic tests**. These tests validate the prototype's local contracts, not model quality, the missing historical V11 dynamic-compute code, or real-corpus collision rates.
 
 See [`experiments/v9_character_pilot/TRAINING_PILOT_REPORT_v9.md`](experiments/v9_character_pilot/TRAINING_PILOT_REPORT_v9.md) for the exact experiment scope, configurations, metrics and limitations.
+
+## Data selection status
+
+No dataset is approved for further training. The current Tiny Shakespeare excerpt remains exploratory-only; candidate dataset-card tags are not treated as a rights determination. Read [`docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`](docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md) before materializing any new corpus.
 
 ## What this repository does not claim
 

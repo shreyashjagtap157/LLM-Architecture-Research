@@ -17,6 +17,7 @@
 5. `docs/research/EXPERIMENTAL_REVIEW.md`
 6. `docs/NEXT_EXPERIMENTS.md`
 7. `NOTICE.md`
+8. `docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`
 
 ## Verified in this package
 
@@ -50,11 +51,12 @@ The recovered runtime contained the v10 specification and the v9 pilot archive, 
 2. Add tests for causality, halting-mass conservation, ponder gradients, hard/soft routing agreement, reset isolation and parameter matching.
 3. Re-run ACT, TSA and V.O.C. as separate experiments with exact launch-time code hashes and per-seed result artifacts.
 4. Recover/implement the pair-N-gram adapter, compare against a parameter-matched wider FFN, and test a fixed-budget hashed/factorized subword version.
-5. Obtain a complete immutable dataset revision with rights cleared for the intended training uses. Do not train commercially on the bundled excerpt without an independent rights review.
-6. Run `experiments/v11_prototypes/audit_ngram_collisions.py` on a locally prepared, rights-cleared token-ID file. Record per-order collisions and table/optimizer memory estimates; note the tool's O(unique n-gram types) memory use.
-7. Benchmark the untrained adapter against statistical n-gram and parameter-matched neural controls. Do not treat unit tests or collision statistics as model-quality evidence.
-8. Train a small subword example model only after data/compute constraints are specified. Keep full-model scale-up blocked until matched ablations demonstrate a quality/efficiency improvement.
-9. For dynamic compute, optimize actual target-hardware kernels and report wall-clock latency/throughput/energy—not only skipped theoretical token-steps.
+5. Read `docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`; do not assume any candidate's aggregate licence tag clears every underlying source or intended model release.
+6. Obtain a complete immutable dataset revision with source-level rights cleared for the intended training uses. Do not train commercially on the bundled excerpt without an independent rights review.
+7. Run `experiments/v11_prototypes/audit_ngram_collisions.py` on a locally prepared, rights-cleared token-ID file. Record per-order collisions and table/optimizer memory estimates; note the tool's O(unique n-gram types) memory use.
+8. Benchmark the untrained adapter against statistical n-gram and parameter-matched neural controls. Do not treat unit tests or collision statistics as model-quality evidence.
+9. Train a small subword example model only after data/compute constraints are specified. Keep full-model scale-up blocked until matched ablations demonstrate a quality/efficiency improvement.
+10. For dynamic compute, optimize actual target-hardware kernels and report wall-clock latency/throughput/energy—not only skipped theoretical token-steps.
 
 ## GitHub publication and safety
 

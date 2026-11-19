@@ -80,6 +80,12 @@ The earlier session used the label “TSA”. A 2026 paper already names a close
 - Record contamination, deduplication, normalization and preprocessing controls.
 - Never use test metrics to select hyperparameters or checkpoint.
 - Never treat public availability as training-use permission.
+- Read `docs/research/DATASET_RIGHTS_REVIEW_2026-11-19.md`. No candidate has been approved; metadata tags are not sufficient proof of source-level rights.
+- Prefer a small, narrowly scoped source with an immutable revision and explicit permitted-use terms. Preserve source notices and hash all selected files before export.
+- For CDLA-Sharing, CC-BY-SA or GFDL candidates, obtain a legal review of attribution, ShareAlike, enhanced-data publication and model/checkpoint distribution implications before materialization.
+- For aggregated corpora, require item/subset-level upstream source and licence inventory; exclude sources with ambiguous rights instead of treating aggregate Apache/MIT metadata as a cure-all.
+- Review privacy, sensitive personal data, consent, retention and removal/opt-out controls independently of copyright licensing.
+- Approve a separate validation/test source and leakage protocol before training; an exposed train-only corpus is not a complete benchmark package.
 
 ## Gate 7 — subword example model
 
