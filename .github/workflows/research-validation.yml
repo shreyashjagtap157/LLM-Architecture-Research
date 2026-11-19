@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   v9-reference-validation:
-    name: Validate preserved v9 reference artifacts
+    name: Validate v9 reference artifacts and v11 prototypes
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -65,11 +65,12 @@ jobs:
       - name: Verify repository checksums
         run: sha256sum --check SHA256SUMS.txt
 
-      - name: Run v9 regression tests
+      - name: Run v9 regression and v11 prototype tests
         run: >-
           python -m pytest -q
           experiments/v9_character_pilot/test_dataset_pipeline.py
           experiments/v9_character_pilot/test_validate_architecture_package.py
+          experiments/v11_prototypes/tests/test_local_ngram_adapter.py
 
       - name: Verify preserved pilot artifacts
         run: python experiments/v9_character_pilot/verify_pilot_artifacts.py

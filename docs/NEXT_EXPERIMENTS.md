@@ -12,6 +12,8 @@ Read [`PRIOR_ART_DYNAMIC_COMPUTE_AND_NGRAM_2026-11-19.md`](research/PRIOR_ART_DY
 
 The broad ideas of hashed n-gram lookup, context-aware gating and additive residual injection already exist in SCONE, Engram and 2026 follow-up work. This gate tests whether the project's specific compact/local variant delivers useful value under matched resource budgets; it does not presume novelty.
 
+- Start with `experiments/v11_prototypes/local_ngram_adapter.py` and its 13 synthetic tests. Treat this as a new reference prototype, not the unrecovered V11 implementation or a trained model.
+- Add a dataset-independent collision audit that reports distinct n-grams, bucket occupancy, collision rate by order, table bytes and expected optimizer-state bytes. Test multiple table sizes before training.
 - Reconstruct the exact pair/N-gram adapter described in the session log. Preserve its source and math as an independent experiment profile.
 - Re-run the original tiny character task first for operator/metric continuity, with the same fixed data and split manifest.
 - Compare against dense baseline, smoothed bigram, a stronger classical n-gram control, matched wider FFN, matched embedding parameters without n-gram keys, and an independently implemented hashed n-gram + context gate control.

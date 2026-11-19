@@ -2,7 +2,7 @@
 
 ## Executive state
 
-The latest complete design document recovered is **SOTA LLM Architecture v10**. The latest fully present and runnable code/evidence package is the **v9 miniature character-model pilot**. Dynamic neural computation was explored in the subsequent 18–19 November sessions, but the raw V11 implementation/result artifacts are not present in the recovered workspace; only the conversation-level experiment record can be preserved here.
+The latest complete design document recovered is **SOTA LLM Architecture v10**. The runnable model-training/evidence baseline is the **v9 miniature character-model pilot**. A small, newly authored V11 research prototype for hashed local n-gram memory has since been added under `experiments/v11_prototypes/`; it passes synthetic unit tests but is untrained and has no quality or efficiency evidence. The original V11 dynamic-computation implementation, checkpoints and raw result artifacts remain unrecovered; only the conversation-level experiment record is available for that work.
 
 The repository is therefore a **research and handoff snapshot**, not a complete V11 implementation repository and not a trained official LLM.
 
@@ -18,6 +18,7 @@ The repository is therefore a **research and handoff snapshot**, not a complete 
 | v9 tests | **44 passed** during this packaging session | `experiments/v9_character_pilot/test_*.py` |
 | v9 artifact verification | **137 checks passed** during this packaging session | `experiments/v9_character_pilot/verify_pilot_artifacts.py` |
 | v9 fresh repeat | Six source-identified runs completed 2026-11-19 07:52:46 UTC (two seeds × three profiles, 500 steps/run); metrics match the archived aggregate | `experiments/v9_character_pilot/results/pilot_results.json` |
+| New V11 local-memory prototype | 13 synthetic-tensor unit tests passed locally; untrained and not a reproduction of the missing V11 code | `experiments/v11_prototypes/` |
 | User inputs | v2 baseline text and ideas compilation preserved | `inputs/` |
 
 ## v9 pilot interpretation
@@ -65,4 +66,18 @@ The published `main` tree has been compared with the supplied Git bundle by root
 
 A repository-level literature review was added at `docs/research/PRIOR_ART_DYNAMIC_COMPUTE_AND_NGRAM_2026-11-19.md`. It identifies direct prior art for token-wise residual gating/adaptive depth (including a paper explicitly named Token-Selective Attention) and hashed n-gram memory with context-aware residual injection. Accordingly, the earlier session label is retained historically as `session_tsa`; new artefacts must distinguish it from the paper's `tsa_2605` method. Pair/N-gram work remains the first reproduction hypothesis but is not treated as a broad novelty claim.
 
-The experiment plan now requires statistical n-gram and matched neural controls, validation-only selection and one sealed test evaluation, held-out complexity/length generalization, routing stability and budget reliability, and safety evaluation separated between prompt prefill and answer generation. These are documented gates; no V11 implementation or new model training has been claimed in this commit. V11 source/checkpoints/raw manifests remain absent, so session metrics are still session-reported.
+The experiment plan now requires statistical n-gram and matched neural controls, validation-only selection and one sealed test evaluation, held-out complexity/length generalization, routing stability and budget reliability, and safety evaluation separated between prompt prefill and answer generation. These are documented gates. A new standalone hashed n-gram adapter prototype is now present and has passed 13 synthetic tests; it is not trained, does not reproduce the missing historical V11 source, and supplies no model-quality or efficiency evidence. Original V11 source/checkpoints/raw manifests remain absent, so the session metrics are still session-reported.
+
+
+## Prototype implementation and validation update — 2026-11-19
+
+The new `experiments/v11_prototypes/local_ngram_adapter.py` prototype computes causal hashed n-gram buckets from token prefixes and injects the looked-up representation through a context-dependent sigmoid gate and projected residual. It includes input/domain checks and handles empty sequences. The caller must provide already-causal hidden states; this module does not establish causality of the upstream network.
+
+Validation performed locally against an uploaded-bundle checkout:
+- Prototype tests: **13 passed**.
+- Existing v9 regression tests: **44 passed**.
+- Existing v9 artifact verifier: **137 checks passed**.
+- Environment: Python 3.13.5, PyTorch 2.10.0+cpu, pytest 9.0.2.
+- No corpus training, checkpoint creation, collision-rate measurement, latency benchmark, or hardware optimization was performed.
+
+GitHub Actions is configured to run the v9 regression tests and the new prototype tests, verify the checksum manifest and preserved v9 artifacts, and refresh the manifest on `main`. The action result for this new commit must be checked before treating CI validation as passed.
