@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Benchmark contract v9",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "snapshot_date",
+    "field_path_convention",
+    "comparison_rules",
+    "required_environment_fields",
+    "required_run_fields",
+    "dataset_role_use_requirements",
+    "primary_metrics",
+    "kv_cache_metrics",
+    "generation_mode_metrics",
+    "agent_safety_metrics",
+    "training_curriculum_metrics",
+    "speculative_co_design_gates",
+    "evaluation_protocol_controls",
+    "conditional_run_fields",
+    "revision_note"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "snapshot_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "field_path_convention": {
+      "type": "string",
+      "minLength": 30
+    },
+    "comparison_rules": {
+      "type": "object",
+      "required": [
+        "paired_tasks",
+        "seeds_minimum",
+        "report_confidence_intervals",
+        "holdout_after_screening",
+        "correct_multiple_comparisons",
+        "publish_negative_results",
+        "no_unmatched_cross_paper_speedup_claims"
+      ],
+      "properties": {
+        "paired_tasks": {
+          "type": "boolean"
+        },
+        "seeds_minimum": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "report_confidence_intervals": {
+          "type": "boolean"
+        },
+        "holdout_after_screening": {
+          "type": "boolean"
+        },
+        "correct_multiple_comparisons": {
+          "type": "boolean"
+        },
+        "publish_negative_results": {
+          "type": "boolean"
+        },
+        "no_unmatched_cross_paper_speedup_claims": {
+          "type": "boolean"
+        },
+        "same_workload_and_tokenizer_for_primary_comparisons": {
+          "type": "boolean"
+        },
+        "separate_quality_and_system_metrics": {
+          "type": "boolean"
+        },
+        "retain_failed_and_inconclusive_runs": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "required_environment_fields": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_run_fields": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "dataset_role_use_requirements": {
+      "type": "object",
+      "required": [
+        "training",
+        "validation",
+        "test",
+        "benchmark",
+        "reward"
+      ],
+      "properties": {
+        "training": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "validation": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "test": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "benchmark": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "reward": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "primary_metrics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "kv_cache_metrics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "generation_mode_metrics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "agent_safety_metrics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "training_curriculum_metrics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evaluation_protocol_controls": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "speculative_co_design_gates": {
+      "type": "object",
+      "required": [
+        "draft_source",
+        "draft_geometry",
+        "verification_fidelity",
+        "runtime_execution",
+        "promotion_gates"
+      ],
+      "properties": {
+        "draft_source": {
+          "type": "string"
+        },
+        "draft_geometry": {
+          "type": "string"
+        },
+        "verification_fidelity": {
+          "type": "string"
+        },
+        "runtime_execution": {
+          "type": "string"
+        },
+        "promotion_gates": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "representability",
+              "verifiability",
+              "state_realizability",
+              "profitability"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "conditional_run_fields": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uniqueItems": true
+      }
+    },
+    "revision_note": {
+      "type": "string",
+      "minLength": 20
+    }
+  }
+}

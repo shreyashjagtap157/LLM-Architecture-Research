@@ -1,0 +1,282 @@
+schema_version: '1.0'
+snapshot_date: '2026-11-18'
+field_path_convention: Dot-separated JSON paths. dataset[*] means every dataset entry; bracketed predicates in prose
+  identify role-specific subsets. Common fields are required for every run; conditional fields apply only to the
+  named run_type or profile_id.
+comparison_rules:
+  paired_tasks: true
+  seeds_minimum: predeclared_by_compute_budget
+  report_confidence_intervals: true
+  holdout_after_screening: true
+  correct_multiple_comparisons: true
+  publish_negative_results: true
+  no_unmatched_cross_paper_speedup_claims: true
+  same_workload_and_tokenizer_for_primary_comparisons: true
+  separate_quality_and_system_metrics: true
+  retain_failed_and_inconclusive_runs: true
+required_environment_fields:
+- hardware.compute_device_type
+- hardware.compute_device_model
+- hardware.compute_device_count
+- hardware.device_memory_type
+- hardware.device_memory_per_device_gib
+- hardware.device_inventory_manifest_sha256
+- hardware.host_ram_gib
+- hardware.interconnect
+- hardware.topology
+- hardware.power_measurement
+- software.framework
+- software.runtime
+- software.driver
+- software.compiler
+- software.environment_kind
+- software.environment_digest
+- software.dependency_lock_sha256
+- software.kernel_revisions
+required_run_fields:
+- schema_version
+- run_id
+- run_type
+- profile_id
+- specification.revision
+- specification.file_name
+- specification.sha256
+- source.repository
+- source.commit
+- source.dirty_tree
+- dataset[*].name
+- dataset[*].version
+- dataset[*].manifest_sha256
+- dataset[*].role
+- dataset[*].license_status
+- dataset[*].provenance_uri
+- dataset[*].allowed_uses
+- dataset[*].rights_review_status
+- hardware.compute_device_type
+- hardware.compute_device_model
+- hardware.compute_device_count
+- hardware.device_memory_type
+- hardware.device_memory_per_device_gib
+- hardware.device_inventory_manifest_sha256
+- hardware.host_ram_gib
+- hardware.interconnect
+- hardware.topology
+- hardware.power_measurement
+- software.framework
+- software.runtime
+- software.driver
+- software.compiler
+- software.environment_kind
+- software.environment_digest
+- software.dependency_lock_sha256
+- software.kernel_revisions
+- model.total_parameters
+- model.active_parameters
+- model.tokenizer_revision
+- model.tokenizer_sha256
+- model.architecture_config_sha256
+- model.context_length
+- model.precision
+- model.quantization_map
+- evaluation.benchmark_suite
+- evaluation.grader_revision
+- evaluation.sample_count
+- evaluation.repetitions
+- evaluation.confidence_interval_method
+- evaluation.metrics[*].name
+- evaluation.metrics[*].value_kind
+- evaluation.metrics[*].value
+- evaluation.metrics[*].unit
+- evaluation.metrics[*].protocol
+- artifacts.configuration_sha256
+- artifacts.raw_logs_sha256
+dataset_role_use_requirements:
+  training:
+  - training
+  validation:
+  - validation
+  - model_selection
+  test:
+  - evaluation
+  benchmark:
+  - evaluation
+  reward:
+  - reward_model_training
+primary_metrics:
+- quality_at_fixed_compute
+- cost_per_accepted_task
+- p50_p95_p99_latency
+- peak_HBM
+- energy_per_task
+- failure_rate
+kv_cache_metrics:
+- bytes_per_retained_token
+- logical_retention_ratio
+- physical_bytes
+- selector_scan_bytes
+- PQ_codebook_bytes
+- semantic_unit_coverage
+- high_density_reasoning_delta
+- fallback_rate
+generation_mode_metrics:
+- mode_selection_regret
+- AR_quality
+- diffusion_quality_by_steps
+- draft_acceptance_by_position
+- verifier_cost
+- tokens_per_forward
+- per_user_latency
+- aggregate_throughput
+- tool_schema_validity
+- draft_geometry_validity
+- causal_path_validity
+- accepted_prefix_length_by_position
+- edit_pass_cost
+- edit_damage_rate
+- correct_token_retention
+- correction_precision
+- correction_recall
+- refinement_convergence
+- target_distribution_fidelity_status
+- state_realization_equivalence
+- scaffold_free_vs_scaffold_assisted_delta
+agent_safety_metrics:
+- unauthorized_tool_attempts
+- blocked_egress_attempts
+- indirect_circumvention_attempts
+- fabricated_completion_rate
+- concealment_rate
+- policy_monitor_false_positive
+- policy_monitor_false_negative
+training_curriculum_metrics:
+- depth_growth_schedule
+- data_difficulty_order
+- total_training_tokens
+- effective_training_FLOPs
+- layer_initialization_policy
+- optimizer_state_transfer_policy
+- growth_event_loss_jump
+- gradient_norm_by_growth_event
+- per_domain_generalization
+- forgetting_delta
+speculative_co_design_gates:
+  draft_source: Document source model/layer/feature and incremental proposal cost.
+  draft_geometry: Document chain/block/tree/lattice/edit geometry and any causal-path conversion.
+  verification_fidelity: Declare exact distribution, deterministic rule, bounded approximation, or changed-output
+    semantics.
+  runtime_execution: Verify committed state, rollback, batching, synchronization, and full-system cost.
+  promotion_gates:
+  - representability
+  - verifiability
+  - state_realizability
+  - profitability
+evaluation_protocol_controls:
+- scaffold_free_and_scaffold_assisted
+- execution_based
+- generative_exact_match
+- likelihood_only_when_well_defined
+- non_AR_safe_postprocessing
+- token_level_edit_damage_audit
+- matched_tokenizer_and_prompt_distribution
+- contamination_and_duplicate_audit
+- separate_latency_percentiles_and_throughput
+conditional_run_fields:
+  pretraining:
+  - training.optimizer
+  - training.optimizer_config
+  - training.scheduler
+  - training.learning_rate_schedule
+  - training.global_batch_tokens
+  - training.training_tokens
+  - training.seed
+  - training.precision
+  - training.max_sequence_length
+  - training.gradient_checkpointing
+  - dataset[role=training].allowed_uses=training
+  - dataset[role=training].rights_review_status=approved_for_declared_uses
+  continued_pretraining_sft_rl:
+  - training.parent_checkpoint_sha256
+  - training.optimizer
+  - training.optimizer_config
+  - training.scheduler
+  - training.learning_rate_schedule
+  - training.global_batch_tokens
+  - training.training_tokens
+  - training.seed
+  - training.precision
+  - training.max_sequence_length
+  - training.gradient_checkpointing
+  - dataset[role=training].allowed_uses=training
+  - dataset[role=training].rights_review_status=approved_for_declared_uses
+  rl:
+  - training.reward_model_revision
+  - training.reward_data_manifest_sha256
+  - dataset[role=reward].allowed_uses=reward_model_training
+  - dataset[role=reward].rights_review_status=approved_for_declared_uses
+  inference_evaluation_ablation_speculative_decode:
+  - model.checkpoint_sha256
+  - serving.batch_size
+  - serving.concurrency
+  - serving.prompt_length_distribution
+  - serving.output_length_distribution
+  - serving.decoding_settings
+  - serving.cache_policy_revision
+  - serving.generation_mode
+  - serving.warmup_iterations
+  - serving.measurement_iterations
+  - serving.latency_definition
+  P7:
+  - serving.generation_modes
+  - serving.mode_router_revision
+  P8:
+  - verification.draft_model_revision
+  - verification.draft_geometry
+  - verification.draft_checkpoint_sha256
+  - verification.draft_tokenizer_sha256
+  - verification.draft_config_sha256
+  - verification.verifier_algorithm_revision
+  - verification.state_commit_policy_revision
+  - verification.proposal_probability_available
+  - verification.target_checkpoint_sha256
+  - verification.acceptance_correction_rule
+  - verification.fidelity_test_revision
+  - verification.fidelity_test_result
+  - verification.fidelity_claim
+  - verification.approximation_metric
+  - verification.approximation_bound
+  P9:
+  - verification.draft_model_revision
+  - verification.draft_geometry
+  - verification.draft_checkpoint_sha256
+  - verification.draft_tokenizer_sha256
+  - verification.draft_config_sha256
+  - verification.fidelity_claim=changed_output
+  - evaluation.metrics[correct_token_retention]
+  - evaluation.metrics[edit_damage_rate]
+  - evaluation.metrics[correction_precision]
+  - evaluation.metrics[correction_recall]
+  - evaluation.metrics[refinement_convergence]
+  - evaluation.metrics[correct_token_retention].value_kind=ratio
+  - evaluation.metrics[correct_token_retention].numerator
+  - evaluation.metrics[correct_token_retention].denominator
+  - evaluation.metrics[edit_damage_rate].value_kind=ratio
+  - evaluation.metrics[edit_damage_rate].numerator
+  - evaluation.metrics[edit_damage_rate].denominator
+  - evaluation.metrics[correction_precision].value_kind=ratio
+  - evaluation.metrics[correction_precision].numerator
+  - evaluation.metrics[correction_precision].denominator
+  - evaluation.metrics[correction_recall].value_kind=ratio
+  - evaluation.metrics[correction_recall].numerator
+  - evaluation.metrics[correction_recall].denominator
+  - evaluation.metrics[refinement_convergence].value_kind=ratio
+  - evaluation.metrics[refinement_convergence].numerator
+  - evaluation.metrics[refinement_convergence].denominator
+  dirty_source_tree:
+  - source.patch_sha256
+  metric_value_kind_ratio:
+  - evaluation.metrics[*].numerator
+  - evaluation.metrics[*].denominator
+revision_note: 'v9: run-identity paths are canonical paths into experiment_manifest.schema.json; dataset roles carry
+  explicit use/right requirements; hardware/environment identity supports CPU-only, accelerator, heterogeneous,
+  managed and bare-metal/container deployments. Conditional fields are scoped by run type/profile. Run-manifest
+  self-hashes are externalized in a checksum sidecar to avoid circular hashing.'

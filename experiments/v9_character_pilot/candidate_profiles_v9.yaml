@@ -1,0 +1,193 @@
+schema_version: '1.0'
+status: research_candidates_not_model_config
+snapshot_date: '2026-11-18'
+global_constraints:
+  parameter_budget: UNSPECIFIED
+  active_parameter_budget: UNSPECIFIED
+  hardware: UNSPECIFIED
+  training_tokens: UNSPECIFIED
+  compute_budget: UNSPECIFIED
+  must_preserve_full_attention_reference: true
+  must_record_exact_kernel_versions: true
+  must_not_promote_without_matched_ablation: true
+profiles:
+- id: P0
+  name: dense_reference
+  purpose: Quality and systems baseline
+  family: decoder_only_transformer
+  sequence_mixer: causal_dense_attention
+  attention: GQA_or_MHA_selected_by_baseline
+  residual: standard_pre_norm
+  ffn: dense
+  kv_policy: full_cache
+  generation: autoregressive
+  promotion: required_reference
+- id: P1
+  name: recurrent_global_hybrid
+  purpose: Measure recurrent/fast-weight sequence path
+  family: hybrid_recurrent_attention
+  recurrent_candidates:
+  - GDN-2
+  - Muir_preprint
+  - Mamba-2
+  - Mamba-3
+  global_attention_schedule_candidates:
+  - '1:1'
+  - '3:1'
+  - '7:1'
+  - front_loaded
+  - back_loaded
+  residual: standard_pre_norm
+  ffn: dense
+  kv_policy: full_cache
+- id: P1-LA
+  name: local_global_attention_control
+  purpose: Compare local/global Transformer without recurrent state
+  family: local_global_transformer
+  local_global_ratio_candidate: 5:1 literature point only
+  attention_candidates:
+  - GQA
+  - relative_position_bias
+  - gated_attention
+  - per_token_sink
+  short_convolution: separate_ablation_only
+  block_attention_residual: separate_ablation_only
+  ffn: dense
+  kv_policy: full_cache
+- id: P2
+  name: sparse_compressed_attention
+  purpose: Measure selection/compression independent of recurrent mixer
+  parent: best_of_P1_and_P1-LA
+  selector_candidates:
+  - DSA_token_topk
+  - QSA_microblock
+  - DHSA_hierarchical
+  - CSA_indexer
+  - HCA_dense_compressed
+  cache_compression: separate_ablation
+  required_fallback: full_attention_full_cache
+- id: P3
+  name: capacity
+  purpose: Measure sparse capacity after sequence path stable
+  parent: best_stable_P1_or_P1-LA
+  ffn_candidates:
+  - dense
+  - topk_moe
+  - shared_expert_moe
+  - LatentMoE
+  attention_moe: SwitchHead_separate_ablation
+  router_bootstrap: hash_router_separate_ablation
+- id: P4
+  name: residual_and_auxiliary_prediction
+  purpose: Measure residual transport, local mixing and speculative training objectives
+  residual_candidates:
+  - standard
+  - AttnRes
+  - block_attention_residual
+  - GatedResidual
+  - mHC
+  local_mixing:
+  - none
+  - causal_conv_KV
+  - causal_conv_all_four
+  prediction_candidates:
+  - none
+  - MTP
+  - DSpark_draft_verify
+- id: P5
+  name: memory_reasoning_application
+  purpose: Measure model-local and external memory with explicit isolation
+  memory_candidates:
+  - recurrent_state
+  - MoM_banks
+  - Titans_neural_memory
+  - RAG_external_memory
+  - request_local_editable_slots
+  reasoning_candidates:
+  - single_pass
+  - bounded_search
+  - typed_validators
+  - calibrated_abstention
+  state_isolation_required: true
+- id: P6
+  name: masked_diffusion_only
+  purpose: Independent non-autoregressive challenger
+  generation: masked_diffusion
+  backbone_candidates:
+  - Transformer
+  - DiffuMamba_style
+  must_not_share_unverified_checkpoint: true
+- id: P7
+  name: unified_tri_mode
+  purpose: Shared AR/diffusion/diffusion-draft-AR-verify challenger
+  generation_modes:
+  - AR
+  - diffusion
+  - diffusion_draft_AR_verify
+  reference: Nemotron-Labs-Diffusion_EMNLP_2026
+  must_keep_AR_control: true
+  must_log_mode_router: true
+- id: P8
+  name: diffusion_drafter_with_AR_verifier
+  purpose: Test DLM parallel proposals with target AR verification
+  generation: diffusion_draft_AR_target_verify
+  draft_methods:
+  - DiffuSpec_CPS_ADL
+  - DEdit_iterative_editing_ProposalMix
+  draft_source: masked_diffusion_language_model
+  draft_geometry:
+  - causal_path_from_token_lattice
+  - iteratively_edited_parallel_draft
+  verification_fidelity: exact_target_distribution_only_if_target_acceptance_correction_is_proven
+  runtime_requirements:
+  - committed_prefix_state_reconstruction
+  - rollback_or_recompute
+  - acceptance_by_position
+  - adaptive_draft_length
+  must_keep_AR_target_control: true
+  must_keep_no_draft_baseline: true
+- id: P9
+  name: AR_seeded_diffusion_refinement
+  purpose: Test bidirectional refinement where changed-output semantics are acceptable
+  generation: AR_draft_then_masked_diffusion_refine
+  draft_source: autoregressive_model
+  refinement: entropy_guided_selective_masking
+  verification_fidelity: changed_output_not_AR_distribution_preserving_without_separate_exact_verifier
+  required_metrics:
+  - correction_precision
+  - correction_recall
+  - correct_token_retention
+  - edit_damage_rate
+  - refinement_convergence
+  - quality_at_fixed_wall_clock
+  must_report_scaffold_free_and_scaffold_assisted_results: true
+training_experiments:
+- id: CGLS-2x2
+  name: progressive_depth_by_data_difficulty_factorial
+  status: optional_training_schedule_ablation_not_architecture_default
+  arms:
+  - depth: fixed
+    data_order: fixed_or_shuffled
+  - depth: fixed
+    data_order: difficulty_curriculum
+  - depth: progressive_layer_stacking
+    data_order: fixed_or_shuffled
+  - depth: progressive_layer_stacking
+    data_order: difficulty_curriculum
+  controls:
+  - matched_total_tokens
+  - matched_effective_training_FLOPs
+  - same_source_distribution
+  - same_holdout
+  - same_optimizer_budget
+  required_logs:
+  - new_layer_initialization
+  - optimizer_state_transfer
+  - loss_discontinuity
+  - gradient_norms
+  - activation_norms
+  - tokens_per_second
+  - wall_clock
+  - per_domain_quality
+  - forgetting
+revision_note: v9 operational snapshot; candidate inventory only, not a model configuration.

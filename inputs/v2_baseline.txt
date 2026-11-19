@@ -1,0 +1,179 @@
+# The Synthesized SOTA LLM Architecture (v2 — with upgrade paths)
+*A composite architecture drawn from DeepSeek-V3/R1, Jamba/Nemotron-Nano hybrid SSM designs, GPT/Claude/Gemini-class dense+MoE systems, plus reasoning-efficiency and cross-pillar coupling techniques developed in this conversation.*
+
+**How to read this document:** every mechanism below is tagged by status:
+- **[PROVEN]** — shipped in a production model, cited.
+- **[PROVEN MECHANISM, NEW APPLICATION]** — the underlying math/training technique is proven elsewhere; this document applies it to a new location in the pipeline.
+- **[PROPOSED]** — a concrete, trainable design with no existing production deployment. Each proposed component includes *why it's trainable with standard backprop/RL infrastructure* so this stays a buildable system, not a wishlist.
+
+---
+
+## 0. Design Thesis
+
+Five pillars, each with a proven core and a proposed upgrade:
+1. **Backbone** — Hybrid Attention + State-Space, now with adaptive layer-type routing
+2. **Capacity** — Sparse MoE, auxiliary-loss-free, now with sequence-coherent routing
+3. **Memory** — Multi-head Latent Attention + 4-tier retrieval, now with an affordable causal-eviction proxy
+4. **Reasoning** — Constrained, oracle-validated thinking, now with weak oracles for non-verifiable domains
+5. **Output** — Multi-Token Prediction + grammar-constrained decoding, now with semantic (not just syntactic) filtering
+6. **Cross-cutting** — a shared uncertainty bus coupling all five pillars (new in v2)
+
+---
+
+## 1. Backbone: Hybrid Attention / State-Space Interleave
+
+### 1.1 Proven core
+Pure Transformers scale quadratically with context and carry an ever-growing KV cache. Pure Mamba (SSM) is linear-time and constant-memory per step but (cite index="19-1">has gaps where induction-head-style in-context learning lags behind attention</cite>. The resolved answer, validated at production scale, is interleaving:
+
+- (cite index="17-1">Repeated blocks, each with a fixed interleaving pattern: roughly one Transformer (self-attention + MLP) layer followed by seven Mamba (state-space model + MLP) layers</cite> — (cite index="15-1">a 1:7 attention-to-Mamba ratio, with no measurable performance difference versus denser attention ratios</cite>.
+- (cite index="19-1">This trades off attention layers for Mamba layers specifically to shrink the total size of the KV cache compared to a vanilla Transformer</cite> — roughly 8x smaller.
+- Result at this ratio: (cite index="17-1">256,000-token context on a single 80GB GPU with up to 3x inference speed improvement</cite>, and (cite index="17-1">over 95% exact-match recall at up to 256K token positions despite only four attention layers total</cite>.
+- (cite index="13-1">Nemotron 3 Nano pairs Mamba/SSM layers with grouped-query attention and MoE routing (256 total experts, 6 active per token) for a 1M-token agentic context window</cite>.
+- (cite index="21-1">Industry analysis of 2026 deployments finds state-space architectures deliver roughly 5x faster inference on long sequences, with hybrid attention+state-space becoming the default for new frontier AI</cite>.
+
+### 1.2 Gap: the ratio is a fixed global constant
+A math proof and a 50-page contract summary have different structural needs (sharp symbolic retrieval vs long-range compression), but a fixed 1:7 ratio can't express that difference per-task or per-chunk.
+
+### 1.3 [PROPOSED] Learned Layer-Type Gating (LLTG)
+Make a subset of layers "swappable": a small gating network (single linear layer on the pooled hidden state of a 512-token chunk, <1M params) outputs a soft mixing weight between computing that layer as attention-vs-Mamba.
+
+**Training recipe:** during pretraining, swappable positions compute *both* paths (a differentiable supernet, identical in spirit to differentiable Neural Architecture Search) and the gate's output linearly mixes the two outputs. Add an entropy regularizer on the gate — weighted the opposite direction from MoE's balance loss, since here you *want* confident specialization per input type, not balance across types.
+
+**Why this is trainable today:** this is the same gating math already used for DeepSeekMoE's top-k expert routing, applied one level up, to layer identity instead of expert identity. No new optimizer family, no new loss family.
+
+**Cost:** ~1.3–1.5x training FLOPs at swappable positions only (paying for both paths during the supernet phase). At inference, once gate confidence passes a threshold, hard-route to the preferred path — cost returns to the 1.x baseline. This is a bounded, known cost, the same one every differentiable-NAS approach pays.
+
+---
+
+## 2. Capacity: Sparse MoE, Auxiliary-Loss-Free
+
+### 2.1 Proven core
+- (cite index="6-1">A 671B-parameter MoE transformer with only 37B parameters activated per token</cite>, (cite index="10-1">256 experts per MoE layer plus one always-on shared expert</cite>.
+- (cite index="5-1">DeepSeek-V3 uses adaptive bias terms per expert, updated according to utilization, allowing specialized expert roles without the auxiliary-loss quality penalty</cite>.
+- Net effect: (cite index="7-1">performance comparable to GPT-4o and Claude-3.5-Sonnet, particularly in coding and math, at an estimated training cost of $5.576M</cite>.
+
+### 2.2 Gap, and why it's smaller than first thought
+Bias-based routing risks oscillation (overcorrecting toward underused experts, then back). This is now formally characterized, not just empirically hoped to work: (cite index="26-1">a December 2025 theoretical framework casts auxiliary-loss-free balancing as a one-step-per-iteration primal-dual method for an assignment problem, showing monotonic improvement of a Lagrangian objective and a preference rule that moves tokens from overloaded to underloaded experts, validated experimentally on 1B-parameter DeepSeekMoE models</cite>. The oscillation risk is real at the mechanism level but bounded by proof under standard step-size conditions — not an open hazard.
+
+### 2.3 Remaining gap: no sequence-level routing coherence
+Routing is still decided per-token independently, even when a whole task (e.g., a full code-review pass) should plausibly stay in one expert cluster.
+
+### 2.4 [PROPOSED] Routing momentum
+Feed the router for token *t* the expert-ID embeddings chosen for the previous *k* tokens as additional input features. Add a small auxiliary consistency loss penalizing high-frequency expert-switching *unless* the token itself signals a domain shift (detected via a cheap perplexity-under-current-expert spike, computed from logits already being produced).
+
+**Why this is trainable:** reuses the existing differentiable routing infrastructure; adds a few hundred lines to the training loop and one small input-feature concatenation. No new differentiation path, no new optimizer.
+
+---
+
+## 3. Memory: Multi-Head Latent Attention + 4-Tier Retrieval
+
+### 3.1 Proven core
+- (cite index="6-1">MLA compresses per-token key and value representations through a down-projection, caching only the compact latent vector per token</cite>, (cite index="6-1">reducing KV cache memory footprint by 80 to 90 percent while keeping inference performance on par with conventional multi-head attention</cite>.
+- (cite index="6-1">This also enables model sharding without heavy reliance on tensor parallelism</cite>.
+
+Composed with the 4-tier memory design (Working → Episodic → Semantic → Procedural): MLA is the mechanism that makes each tier's storage cheap enough to retain.
+
+### 3.2 Gap: causal-influence eviction is correct but unaffordable
+True counterfactual ablation (re-run the forward pass with a KV entry removed, measure output KL divergence) costs a full extra forward pass per eviction candidate — a non-starter at serving scale.
+
+### 3.3 [PROPOSED] Learned Causal-Influence Proxy (the key fix in this revision)
+Train a small auxiliary head (2-layer MLP, input = each KV entry's own attention-weight history, age, and position) to *predict* what the expensive counterfactual-ablation score would have been.
+
+**Training recipe:** during pretraining, periodically compute the real (expensive) ablation score for a sampled subset of KV entries, and train the proxy head via regression (standard supervised loss) to match it. At inference, only the cheap proxy ever runs — negligible cost next to the main model, since it's a tiny MLP, not a full forward pass.
+
+**Why this closes the gap:** this is the same pattern as value-function approximation replacing exact tree search in RL — compute the expensive ground-truth signal once, offline, then query a cheap learned approximation forever. It makes causal-aware eviction something you can actually run at serving time rather than something correct only on paper.
+
+---
+
+## 4. Reasoning: Constrained, Monotonic, Oracle-Validated Thinking
+
+### 4.1 Proven-mechanism core (as designed earlier in this conversation)
+- Pre-reasoning symbolic constraint compilation (type signatures, test assertions, causal dependency graph) handed to the model as a fact rather than discovered mid-stream.
+- A monotonic state machine: Context Analysis → Constraint Extraction → Contradiction Detection → Hypothesis Scoping → Candidate Generation → Oracle Validation → Commit. No re-entry into exited states.
+- Oracle validation: for code, proposed fixes are compiled and tested immediately rather than validated by further reasoning tokens.
+- Entropy-gated forced commitment as a fallback against residual cycling.
+- Adaptive reasoning-depth routing, allocating a reasoning budget by task-complexity classification before generation starts.
+
+### 4.2 Gap: oracle validation needs ground truth, which most tasks don't have
+Code and math have compilers/solvers. Subjective or ambiguous tasks (architecture tradeoffs, strategy, open-ended judgment) have no formal oracle.
+
+### 4.3 [PROPOSED] Weak oracles via self-consistency, as a second Validate backend
+Generate N independent reasoning paths (cheap, since the Section 1 backbone is fast) and treat mutual agreement across paths as the validation signal when no formal oracle exists. The state machine's Validate state gets two interchangeable backends, selected automatically by detected task type: compiler/solver for verifiable domains, self-consistency agreement for everything else. The model doesn't need to know which backend is active — the state-machine transition logic is identical either way.
+
+**Why this is trainable:** self-consistency sampling is an existing, well-understood inference-time technique; the only new part is wiring it into the same state-machine abstraction already built for oracle validation, so no new training objective is required — only an inference-time routing decision over which validator to call.
+
+### 4.4 [PROPOSED] Calibrated abstention
+When even self-consistency disagrees strongly (high variance across N paths, no majority), the state machine has a defined terminal state: emit a flagged low-confidence output instead of continuing to reason. This is the formal fix for the original cycling symptom in genuinely ambiguous cases — the system gets a state for "this is ambiguous, say so" instead of cycling indefinitely hoping to resolve it.
+
+---
+
+## 5. Output: Multi-Token Prediction + Grammar-Constrained Decoding
+
+### 5.1 Proven core
+- (cite index="5-1">DeepSeek-V3's Multi-Token Prediction trains the model to predict several future tokens from each position</cite>, doubling at inference as (cite index="3-1">the basis for speculative decoding, significantly increasing generation speed</cite>.
+- Grammar-constrained generation for any output with a known target shape — function signatures, diffs, JSON tool calls.
+
+### 5.2 Gap: syntactic validity does not imply semantic correctness
+A grammar constrains shape, not meaning — the decoder can emit perfectly valid JSON with a logically wrong field value or type.
+
+### 5.3 [PROPOSED] Two-stage constrained decoding
+Stage 1 (existing): grammar constraint restricts the logit distribution to syntactically valid continuations.
+Stage 2 (new): within that valid set, re-rank using the Section 3.3 causal-influence proxy and the Section 4.1 constraint map (already computed during reasoning, reused here at zero extra extraction cost) — a token that's grammatically legal but violates an already-extracted type constraint gets zero probability mass, not merely lower probability.
+
+**Why this is trainable/implementable:** no new model component — this is an inference-time decoding filter that reuses two pieces of state (the constraint map and the causal-influence proxy) that the rest of the architecture is already producing for other purposes.
+
+---
+
+## 6. Cross-Cutting: The Shared Uncertainty Bus (new in v2)
+
+### 6.1 The gap this closes
+In v1, the five pillars were pipelined, not coupled: the memory tier couldn't tell the reasoning stage which facts it was unsure about; the MoE router had no signal that reasoning was stuck in a validation loop.
+
+### 6.2 [PROPOSED] Global Scratchpad Tensor
+One additional, architecturally small (e.g., 256-dim) persistent vector per sequence — not per layer, a single global vector — updated additively by every pillar:
+- The MoE router writes its load-balance/max-violation confidence (from Section 2.2's primal-dual metric).
+- The memory tier writes its causal-influence-proxy confidence (Section 3.3).
+- The reasoning state machine writes its current state and oracle/self-consistency agreement score (Section 4).
+
+Every pillar also reads this vector as additional conditioning input, concatenated to its own input through a small learned projection.
+
+**Why this is trainable:** 256 floats is negligible next to the main residual stream, and it's just another small differentiable pathway updated and read via ordinary backprop — not a separate system requiring new infrastructure. This is the single highest-leverage addition in v2: it turns five pipelined stages into a system where a struggle in one stage (e.g., repeated oracle failures) can change behavior in another (e.g., widen MoE routing, pull more aggressively from episodic memory) — the explicit limitation flagged in v1.
+
+---
+
+## 7. Precision & Training Efficiency
+
+- (cite index="11-1">FP8 mixed-precision training, with all components taking inputs and outputs in BF16</cite>, is the proven precision floor at this scale — it let DeepSeek-V3 train a 671B model on (cite index="7-1">2,048 H800 GPUs for an estimated $5.576M</cite>.
+- Chinchilla-style compute-optimal scaling (model size and data scaled together) governs how large to make the dense/active portion of the stack before diminishing returns set in.
+- **v2 addition:** the proposed components (LLTG supernet, routing momentum, causal-influence proxy, uncertainty bus) add training cost in the 1.3–1.6x range at pretraining time, concentrated in Sections 1.3 and 3.3; all are removable at inference time or reduce to negligible added cost (MLPs, small gates), so the serving-cost profile of the original architecture is preserved.
+
+---
+
+## 8. End-to-End Shape (v2)
+
+```mermaid
+graph TD
+    A[Tokenized Input] --> B[Hybrid Block xN: LLTG-gated Attention+MLA / Mamba-SSM]
+    B --> C{MoE Routing with Routing Momentum}
+    C -->|shared expert| D[Dense FFN]
+    C -->|top-k routed experts, bias-balanced, primal-dual stable| E[Sparse Expert FFNs]
+    D --> F[Residual Stream]
+    E --> F
+    F --> G[4-Tier Memory via MLA latents + Causal-Influence Proxy Eviction]
+    G --> H[Reasoning State Machine: Oracle Validation or Self-Consistency Backend]
+    H --> I[Multi-Token Prediction Head]
+    I --> J[Two-Stage Decoding: Grammar then Semantic Constraint Filter]
+    U[Global Scratchpad Tensor, 256-dim] -.reads/writes.- B
+    U -.reads/writes.- C
+    U -.reads/writes.- G
+    U -.reads/writes.- H
+```
+
+---
+
+## 9. Honest Limits (updated)
+
+1. **Oracle validation still only fully resolves verifiable domains.** Section 4.3's self-consistency backend is a *weak* oracle — agreement across sampled reasoning paths is evidence, not proof, and can be confidently wrong if all paths share the same blind spot. This is a real ceiling, not fully closed by this revision.
+2. **The LLTG supernet (1.3) and causal-influence proxy (3.3) both require an offline distillation phase** — a one-time but non-trivial training cost increase. This is bounded and known, not open-ended, but it is a real resource requirement, not free.
+3. **No public lab has combined all six pieces (hybrid backbone, auxiliary-loss-free MoE, MLA, oracle-validated reasoning, two-stage decoding, and a shared uncertainty bus) in one trained model.** Sections 1–5's proven cores are independently validated at production scale; Section 6 and the "2.x/3.x/4.x/5.x proposed" upgrades are this document's original synthesis, trainable with standard infrastructure but unvalidated at scale.
+4. **"No issues when responding to requests" remains unachievable.** This revision closes specific, well-characterized gaps (ratio rigidity, eviction cost, oracle coverage, semantic decoding, cross-pillar blindness) with concrete, buildable mechanisms — it does not eliminate hallucination or raise the ceiling on genuine capability, which live in training data and alignment, not architecture.

@@ -1,0 +1,70 @@
+schema_version: '1.0'
+snapshot_date: '2026-11-18'
+comparison_rules:
+  paired_tasks: true
+  seeds_minimum: predeclared_by_compute_budget
+  report_confidence_intervals: true
+  holdout_after_screening: true
+  correct_multiple_comparisons: true
+  publish_negative_results: true
+  no_unmatched_cross_paper_speedup_claims: true
+required_environment_fields:
+- accelerator_model
+- accelerator_count
+- HBM_per_device
+- interconnect
+- CPU_RAM
+- software_stack
+- kernel_commit
+- driver_version
+- dtype
+- quantization_map
+- parallelism_layout
+required_run_fields:
+- model_revision
+- tokenizer_revision
+- dataset_manifest_hash
+- training_tokens
+- optimizer_config
+- seed
+- batch_size
+- context_length
+- output_length
+- decoding_settings
+- cache_policy_revision
+- mode_router_revision
+- grader_revision
+primary_metrics:
+- quality_at_fixed_compute
+- cost_per_accepted_task
+- p50_p95_p99_latency
+- peak_HBM
+- energy_per_task
+- failure_rate
+kv_cache_metrics:
+- bytes_per_retained_token
+- logical_retention_ratio
+- physical_bytes
+- selector_scan_bytes
+- PQ_codebook_bytes
+- semantic_unit_coverage
+- high_density_reasoning_delta
+- fallback_rate
+generation_mode_metrics:
+- mode_selection_regret
+- AR_quality
+- diffusion_quality_by_steps
+- draft_acceptance_by_position
+- verifier_cost
+- tokens_per_forward
+- per_user_latency
+- aggregate_throughput
+- tool_schema_validity
+agent_safety_metrics:
+- unauthorized_tool_attempts
+- blocked_egress_attempts
+- indirect_circumvention_attempts
+- fabricated_completion_rate
+- concealment_rate
+- policy_monitor_false_positive
+- policy_monitor_false_negative

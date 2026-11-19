@@ -1,0 +1,169 @@
+START P0 seed=20261118
+{
+  "profile": "P0",
+  "seed": 20261118,
+  "parameters": 72832,
+  "selected_best_step": 500,
+  "initial_val_nats_per_char": 57.02690567508821,
+  "train_nats_per_char": 2.766622932836971,
+  "validation_nats_per_char": 2.768952379944504,
+  "test_nats_per_char": 2.739430881315662,
+  "train_evaluated_characters": 23936,
+  "validation_evaluated_characters": 2976,
+  "test_evaluated_characters": 2976,
+  "validation_top1_next_char_accuracy": 0.2661290322580645,
+  "test_top1_next_char_accuracy": 0.2594086021505376,
+  "ngram_baselines": {
+    "unigram_nats_per_char": 3.255476556566342,
+    "bigram_nats_per_char": 2.4317889468136276,
+    "unigram_top1_next_char_accuracy": 0.15120967741935484,
+    "bigram_top1_next_char_accuracy": 0.2745295698924731,
+    "smoothing_alpha": 0.5,
+    "matched_evaluated_targets": 2976,
+    "evaluation_positions": "same non-overlapping context-block targets as neural models"
+  },
+  "invariants": {
+    "causal_future_leakage_max_abs": 0.0,
+    "causality_positions_tested": [
+      1,
+      8,
+      16,
+      31
+    ],
+    "causality_error_by_position": {
+      "1": 0.0,
+      "8": 0.0,
+      "16": 0.0,
+      "31": 0.0
+    },
+    "request_state_reset_repeat_max_abs": 0.0
+  },
+  "train_perplexity_char": 15.904831529340665,
+  "validation_perplexity_char": 15.941924179052215,
+  "test_perplexity_char": 15.478173671368666,
+  "train_seconds": 1.8159813140000551,
+  "training_characters_processed": 64000,
+  "training_characters_per_second": 35242.6533833806,
+  "forward_characters_per_second_batch16": 284817.4075661227,
+  "median_step_loss_first_25": 51.047096252441406,
+  "median_step_loss_last_25": 3.2159931659698486,
+  "optimizer_steps_completed": 500,
+  "gradient_norm_median": 2.295097231864929,
+  "gradient_norm_max": 26.632251739501953,
+  "all_trainable_parameters_received_gradient_first_step": true,
+  "finite_loss_and_gradients_all_steps": true,
+  "checkpoint_sha256": "1ca3304d33d6d4c52e901e1a6614b82e73d697b581c8456141a3d5be531f10bc"
+}
+START P1 seed=20261118
+{
+  "profile": "P1",
+  "seed": 20261118,
+  "parameters": 72928,
+  "selected_best_step": 500,
+  "initial_val_nats_per_char": 56.93777445311187,
+  "train_nats_per_char": 2.7333110929491684,
+  "validation_nats_per_char": 2.7520938868163736,
+  "test_nats_per_char": 2.7182694917084067,
+  "train_evaluated_characters": 23936,
+  "validation_evaluated_characters": 2976,
+  "test_evaluated_characters": 2976,
+  "validation_top1_next_char_accuracy": 0.26948924731182794,
+  "test_top1_next_char_accuracy": 0.2701612903225806,
+  "ngram_baselines": {
+    "unigram_nats_per_char": 3.255476556566342,
+    "bigram_nats_per_char": 2.4317889468136276,
+    "unigram_top1_next_char_accuracy": 0.15120967741935484,
+    "bigram_top1_next_char_accuracy": 0.2745295698924731,
+    "smoothing_alpha": 0.5,
+    "matched_evaluated_targets": 2976,
+    "evaluation_positions": "same non-overlapping context-block targets as neural models"
+  },
+  "invariants": {
+    "causal_future_leakage_max_abs": 0.0,
+    "causality_positions_tested": [
+      1,
+      8,
+      16,
+      31
+    ],
+    "causality_error_by_position": {
+      "1": 0.0,
+      "8": 0.0,
+      "16": 0.0,
+      "31": 0.0
+    },
+    "request_state_reset_repeat_max_abs": 0.0
+  },
+  "train_perplexity_char": 15.383739776651709,
+  "validation_perplexity_char": 15.675420100290957,
+  "test_perplexity_char": 15.15407528827808,
+  "train_seconds": 8.047941380000111,
+  "training_characters_processed": 64000,
+  "training_characters_per_second": 7952.344205568644,
+  "forward_characters_per_second_batch16": 93434.4818374265,
+  "median_step_loss_first_25": 52.4244270324707,
+  "median_step_loss_last_25": 3.207397937774658,
+  "optimizer_steps_completed": 500,
+  "gradient_norm_median": 2.3917031288146973,
+  "gradient_norm_max": 51.83555603027344,
+  "all_trainable_parameters_received_gradient_first_step": true,
+  "finite_loss_and_gradients_all_steps": true,
+  "checkpoint_sha256": "cc1f48cf9ced900773a265f4bb4b8cfc04793907b2d2b8902dc1598fb1d7ac97"
+}
+START P1-LA seed=20261118
+{
+  "profile": "P1-LA",
+  "seed": 20261118,
+  "parameters": 72832,
+  "selected_best_step": 500,
+  "initial_val_nats_per_char": 57.01579317482569,
+  "train_nats_per_char": 2.7552771902976825,
+  "validation_nats_per_char": 2.757634747412897,
+  "test_nats_per_char": 2.727856115628314,
+  "train_evaluated_characters": 23936,
+  "validation_evaluated_characters": 2976,
+  "test_evaluated_characters": 2976,
+  "validation_top1_next_char_accuracy": 0.2674731182795699,
+  "test_top1_next_char_accuracy": 0.259744623655914,
+  "ngram_baselines": {
+    "unigram_nats_per_char": 3.255476556566342,
+    "bigram_nats_per_char": 2.4317889468136276,
+    "unigram_top1_next_char_accuracy": 0.15120967741935484,
+    "bigram_top1_next_char_accuracy": 0.2745295698924731,
+    "smoothing_alpha": 0.5,
+    "matched_evaluated_targets": 2976,
+    "evaluation_positions": "same non-overlapping context-block targets as neural models"
+  },
+  "invariants": {
+    "causal_future_leakage_max_abs": 0.0,
+    "causality_positions_tested": [
+      1,
+      8,
+      16,
+      31
+    ],
+    "causality_error_by_position": {
+      "1": 0.0,
+      "8": 0.0,
+      "16": 0.0,
+      "31": 0.0
+    },
+    "request_state_reset_repeat_max_abs": 0.0
+  },
+  "train_perplexity_char": 15.725399226825985,
+  "validation_perplexity_char": 15.762516489504426,
+  "test_perplexity_char": 15.300050294700506,
+  "train_seconds": 2.127302310000232,
+  "training_characters_processed": 64000,
+  "training_characters_per_second": 30085.051710395135,
+  "forward_characters_per_second_batch16": 248104.34390021267,
+  "median_step_loss_first_25": 50.95869827270508,
+  "median_step_loss_last_25": 3.2113442420959473,
+  "optimizer_steps_completed": 500,
+  "gradient_norm_median": 2.2951735258102417,
+  "gradient_norm_max": 26.46810531616211,
+  "all_trainable_parameters_received_gradient_first_step": true,
+  "finite_loss_and_gradients_all_steps": true,
+  "checkpoint_sha256": "29f670a5406626aa258496534f93fc4c0b315b6135ce7caad476e2d4ae453761"
+}
+PILOT_COMPLETE

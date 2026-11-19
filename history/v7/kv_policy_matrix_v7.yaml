@@ -1,0 +1,81 @@
+schema_version: '1.0'
+status: candidate_policy_matrix_not_combined_default
+baseline: full_KV_cache
+required_comparators:
+- H2O
+- StreamingLLM
+- SnapKV
+- PyramidKV
+policies:
+- id: Seer
+  operation: semantic_selection_plus_product_quantization
+  learned_artifacts:
+  - semantic_centroids
+  - PQ_codebooks
+  online_work:
+  - cluster_importance
+  - asymmetric_distance_lookup
+  - selected_attention
+  reported_metrics_scope: 32K paper setup
+  evidence_status: EMNLP_2026_published
+  risks:
+  - centroid_shift
+  - codebook_memory
+  - lookup_bandwidth
+  - selection_miss
+- id: ShotKV
+  operation: semantic_unit_preservation
+  learned_artifacts: []
+  online_work:
+  - unit_boundary_admission
+  - prefill_decode_budgeting
+  reported_metrics_scope: ICML_2026 paper tasks
+  evidence_status: ICML_2026_published
+  risks:
+  - unit_boundary_errors
+  - pinned_cache_occupancy
+  - long_reasoning_scope_transfer
+- id: Distance-KV
+  operation: offline_layer_head_relative_distance_retention_prior
+  learned_artifacts:
+  - retention_map
+  online_work:
+  - distance_bucket_lookup
+  - cache_compaction
+  reported_metrics_scope: Llama_3.1_8B_Instruct_128K_plus_other_tests
+  evidence_status: arXiv_preprint
+  risks:
+  - backbone_shift
+  - position_distribution_shift
+  - static_prior_mismatch
+- id: LiteKV
+  operation: three_ring_recent_heavy_hitter_overview_plus_semantic_shift
+  learned_artifacts:
+  - optional_semantic_shift_statistics
+  online_work:
+  - ring_promotion_demotion
+  - semantic_shift_score
+  reported_metrics_scope: journal_abstract_level_review
+  evidence_status: journal_article_abstract_review_pending_full_reproduction
+  risks:
+  - overview_loss
+  - shift_detector_cost
+  - ring_starvation
+composition_policy:
+  default: one_candidate_at_a_time
+  pairs_allowed_after_single_policy_ablation: true
+  must_declare_precedence: true
+  must_count_metadata_and_indexer_bytes: true
+  must_have_exact_fallback: true
+  must_test_high_density_reasoning: true
+required_tests:
+- NIAH
+- multi_needle
+- RULER
+- LongBench_v2_or_successor
+- KVFundaBench_or_equivalent
+- few_shot_unit_integrity
+- multi_hop_reasoning
+- code_dependency_preservation
+- tool_schema_integrity
+- distribution_shift

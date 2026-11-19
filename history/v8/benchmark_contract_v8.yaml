@@ -1,0 +1,118 @@
+schema_version: '1.0'
+snapshot_date: '2026-11-18'
+comparison_rules:
+  paired_tasks: true
+  seeds_minimum: predeclared_by_compute_budget
+  report_confidence_intervals: true
+  holdout_after_screening: true
+  correct_multiple_comparisons: true
+  publish_negative_results: true
+  no_unmatched_cross_paper_speedup_claims: true
+required_environment_fields:
+- accelerator_model
+- accelerator_count
+- HBM_per_device
+- interconnect
+- CPU_RAM
+- software_stack
+- kernel_commit
+- driver_version
+- dtype
+- quantization_map
+- parallelism_layout
+required_run_fields:
+- model_revision
+- tokenizer_revision
+- dataset_manifest_hash
+- training_tokens
+- optimizer_config
+- seed
+- batch_size
+- context_length
+- output_length
+- decoding_settings
+- cache_policy_revision
+- mode_router_revision
+- grader_revision
+- draft_model_revision
+- draft_geometry_revision
+- verification_algorithm_revision
+- state_commit_policy_revision
+- target_fidelity_contract
+primary_metrics:
+- quality_at_fixed_compute
+- cost_per_accepted_task
+- p50_p95_p99_latency
+- peak_HBM
+- energy_per_task
+- failure_rate
+kv_cache_metrics:
+- bytes_per_retained_token
+- logical_retention_ratio
+- physical_bytes
+- selector_scan_bytes
+- PQ_codebook_bytes
+- semantic_unit_coverage
+- high_density_reasoning_delta
+- fallback_rate
+generation_mode_metrics:
+- mode_selection_regret
+- AR_quality
+- diffusion_quality_by_steps
+- draft_acceptance_by_position
+- verifier_cost
+- tokens_per_forward
+- per_user_latency
+- aggregate_throughput
+- tool_schema_validity
+- draft_geometry_validity
+- causal_path_validity
+- accepted_prefix_length_by_position
+- edit_pass_cost
+- edit_damage_rate
+- correct_token_retention
+- correction_precision
+- correction_recall
+- refinement_convergence
+- target_distribution_fidelity_status
+- state_realization_equivalence
+- scaffold_free_vs_scaffold_assisted_delta
+agent_safety_metrics:
+- unauthorized_tool_attempts
+- blocked_egress_attempts
+- indirect_circumvention_attempts
+- fabricated_completion_rate
+- concealment_rate
+- policy_monitor_false_positive
+- policy_monitor_false_negative
+training_curriculum_metrics:
+- depth_growth_schedule
+- data_difficulty_order
+- total_training_tokens
+- effective_training_FLOPs
+- layer_initialization_policy
+- optimizer_state_transfer_policy
+- growth_event_loss_jump
+- gradient_norm_by_growth_event
+- per_domain_generalization
+- forgetting_delta
+speculative_co_design_gates:
+  draft_source: document source model/layer/feature and proposal cost
+  draft_geometry: document chain/block/tree/lattice/editing structure and causal path
+    conversion
+  verification_fidelity: state exact distribution/deterministic rule/bounded approximation/changed-output
+    semantics
+  runtime_execution: verify committed state, rollback, batching, synchronization and
+    full-system costs
+  promotion_gates:
+  - representability
+  - verifiability
+  - state_realizability
+  - profitability
+evaluation_protocol_controls:
+- scaffold_free_and_scaffold_assisted
+- execution_based
+- generative_exact_match
+- likelihood_only_when_well_defined
+- non_AR_safe_postprocessing
+- token_level_edit_damage_audit

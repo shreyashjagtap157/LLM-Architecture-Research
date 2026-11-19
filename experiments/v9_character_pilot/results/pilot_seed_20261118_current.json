@@ -1,0 +1,238 @@
+{
+  "title": "v9 CPU architecture feasibility pilot",
+  "run_class": "exploratory_small_scale_reference_training_not_frontier_validation",
+  "operator_algebra_checks": {
+    "gdn2_rank_one_vs_explicit_matrix_max_abs_error": 2.220446049250313e-16,
+    "pass": true
+  },
+  "implementation_scope": {
+    "P0": "two dense causal attention blocks with feed-forward sublayers",
+    "P1": "one GDN-2-inspired recurrent reference operator plus one dense attention block; simplified projections/gates; not official GDN-2 implementation",
+    "P1-LA": "one 16-token local causal attention block plus one dense global attention block; not an Inkling 2 reproduction"
+  },
+  "run_timestamp_utc": "2026-11-18T09:05:04Z",
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "device": "cpu",
+    "cpu_count": 3,
+    "threads": 1,
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41"
+  },
+  "config": {
+    "seeds": [
+      20261118
+    ],
+    "d_model": 64,
+    "heads": 4,
+    "layers": 2,
+    "ffn_hidden_P0_P1LA": 128,
+    "ffn_hidden_P1": 80,
+    "context": 32,
+    "batch_size": 4,
+    "steps": 500,
+    "eval_interval": 250,
+    "lr": 0.0003
+  },
+  "dataset": {
+    "source_name": "Tiny Shakespeare text from karpathy/char-rnn data/tinyshakespeare/input.txt",
+    "source_url": "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt",
+    "repository_blob_sha": "7dcb3a2d4cc3b48b6283dd46870bfeb78f88aac9",
+    "source_file_bytes_reported_online": 1115394,
+    "local_sample_bytes": 29926,
+    "local_sample_sha256": "3229111e25b798391b379a7707aad6b45cb8cfe8d26e0ec463a2120ec15e18be",
+    "license_note": "Source repository has no declared license metadata. Shakespeare's underlying works are public domain, but transcription/edition rights have not been independently reviewed; commercial training approval is not established.",
+    "rights_review_status": "pending",
+    "sample_materialization_note": "A 29,926-byte excerpt was locally materialized from the GitHub blob response. The local SHA-256 locks the exact sample used; byte-for-byte equivalence to the complete upstream file was not independently verified.",
+    "sample_fraction_of_upstream_file": 0.02682998115464132,
+    "split_method": "sequential 80/10/10 split of the locally recovered 29.9 KB excerpt; not the official upstream split",
+    "counts": {
+      "characters_total": 29926,
+      "train": 23940,
+      "validation": 2993,
+      "test": 2993,
+      "vocabulary": 58,
+      "unknown_validation_test_characters": 0
+    }
+  },
+  "ngram_baselines": {
+    "unigram_nats_per_char": 3.255476556566342,
+    "bigram_nats_per_char": 2.4317889468136276,
+    "unigram_top1_next_char_accuracy": 0.15120967741935484,
+    "bigram_top1_next_char_accuracy": 0.2745295698924731,
+    "smoothing_alpha": 0.5,
+    "matched_evaluated_targets": 2976,
+    "evaluation_positions": "same non-overlapping context-block targets as neural models"
+  },
+  "results": [
+    {
+      "profile": "P0",
+      "seed": 20261118,
+      "parameters": 72832,
+      "selected_best_step": 500,
+      "initial_val_nats_per_char": 57.02690567508821,
+      "train_nats_per_char": 2.766622932836971,
+      "validation_nats_per_char": 2.768952379944504,
+      "test_nats_per_char": 2.739430881315662,
+      "train_evaluated_characters": 23936,
+      "validation_evaluated_characters": 2976,
+      "test_evaluated_characters": 2976,
+      "validation_top1_next_char_accuracy": 0.2661290322580645,
+      "test_top1_next_char_accuracy": 0.2594086021505376,
+      "ngram_baselines": {
+        "unigram_nats_per_char": 3.255476556566342,
+        "bigram_nats_per_char": 2.4317889468136276,
+        "unigram_top1_next_char_accuracy": 0.15120967741935484,
+        "bigram_top1_next_char_accuracy": 0.2745295698924731,
+        "smoothing_alpha": 0.5,
+        "matched_evaluated_targets": 2976,
+        "evaluation_positions": "same non-overlapping context-block targets as neural models"
+      },
+      "invariants": {
+        "causal_future_leakage_max_abs": 0.0,
+        "causality_positions_tested": [
+          1,
+          8,
+          16,
+          31
+        ],
+        "causality_error_by_position": {
+          "1": 0.0,
+          "8": 0.0,
+          "16": 0.0,
+          "31": 0.0
+        },
+        "request_state_reset_repeat_max_abs": 0.0
+      },
+      "train_perplexity_char": 15.904831529340665,
+      "validation_perplexity_char": 15.941924179052215,
+      "test_perplexity_char": 15.478173671368666,
+      "train_seconds": 2.270091090000278,
+      "training_characters_processed": 64000,
+      "training_characters_per_second": 28192.701289353176,
+      "forward_characters_per_second_batch16": 261998.44567857293,
+      "median_step_loss_first_25": 51.047096252441406,
+      "median_step_loss_last_25": 3.2159931659698486,
+      "optimizer_steps_completed": 500,
+      "gradient_norm_median": 2.295097231864929,
+      "gradient_norm_max": 26.632251739501953,
+      "all_trainable_parameters_received_gradient_first_step": true,
+      "finite_loss_and_gradients_all_steps": true,
+      "sample": "First Citizen:\nBefore we proceed thes he mese m\nTin man w ad, hesils\n\nhe t we thesance s out f ithe f se ion hesthe y araris mlalil s sar at he nnre se w fathe t stharrsthe pthe y thare me thene fff foue hat sire boured ase s warathe y t w alliin he th",
+      "checkpoint_sha256": "1ca3304d33d6d4c52e901e1a6614b82e73d697b581c8456141a3d5be531f10bc"
+    },
+    {
+      "profile": "P1",
+      "seed": 20261118,
+      "parameters": 72928,
+      "selected_best_step": 500,
+      "initial_val_nats_per_char": 56.93777445311187,
+      "train_nats_per_char": 2.7333110929491684,
+      "validation_nats_per_char": 2.7520938868163736,
+      "test_nats_per_char": 2.7182694917084067,
+      "train_evaluated_characters": 23936,
+      "validation_evaluated_characters": 2976,
+      "test_evaluated_characters": 2976,
+      "validation_top1_next_char_accuracy": 0.26948924731182794,
+      "test_top1_next_char_accuracy": 0.2701612903225806,
+      "ngram_baselines": {
+        "unigram_nats_per_char": 3.255476556566342,
+        "bigram_nats_per_char": 2.4317889468136276,
+        "unigram_top1_next_char_accuracy": 0.15120967741935484,
+        "bigram_top1_next_char_accuracy": 0.2745295698924731,
+        "smoothing_alpha": 0.5,
+        "matched_evaluated_targets": 2976,
+        "evaluation_positions": "same non-overlapping context-block targets as neural models"
+      },
+      "invariants": {
+        "causal_future_leakage_max_abs": 0.0,
+        "causality_positions_tested": [
+          1,
+          8,
+          16,
+          31
+        ],
+        "causality_error_by_position": {
+          "1": 0.0,
+          "8": 0.0,
+          "16": 0.0,
+          "31": 0.0
+        },
+        "request_state_reset_repeat_max_abs": 0.0
+      },
+      "train_perplexity_char": 15.383739776651709,
+      "validation_perplexity_char": 15.675420100290957,
+      "test_perplexity_char": 15.15407528827808,
+      "train_seconds": 8.354197851000208,
+      "training_characters_processed": 64000,
+      "training_characters_per_second": 7660.819284084538,
+      "forward_characters_per_second_batch16": 89714.02323429046,
+      "median_step_loss_first_25": 52.4244270324707,
+      "median_step_loss_last_25": 3.207397937774658,
+      "optimizer_steps_completed": 500,
+      "gradient_norm_median": 2.3917031288146973,
+      "gradient_norm_max": 51.83555603027344,
+      "all_trainable_parameters_received_gradient_first_step": true,
+      "finite_loss_and_gradients_all_steps": true,
+      "sample": "First Citizen:\nBefore we proceeder the sant ased\nAs womeusrenomot he thin se fus\nI thost ansid soule cyoumest llhesthene mend han sd tes, cef por nthathas thes\n\n men feaw\nVs pouste the thers pon f s pelicosthe pe therom melarr wal\n\nMound\nMet olll somow",
+      "checkpoint_sha256": "cc1f48cf9ced900773a265f4bb4b8cfc04793907b2d2b8902dc1598fb1d7ac97"
+    },
+    {
+      "profile": "P1-LA",
+      "seed": 20261118,
+      "parameters": 72832,
+      "selected_best_step": 500,
+      "initial_val_nats_per_char": 57.01579317482569,
+      "train_nats_per_char": 2.7552771902976825,
+      "validation_nats_per_char": 2.757634747412897,
+      "test_nats_per_char": 2.727856115628314,
+      "train_evaluated_characters": 23936,
+      "validation_evaluated_characters": 2976,
+      "test_evaluated_characters": 2976,
+      "validation_top1_next_char_accuracy": 0.2674731182795699,
+      "test_top1_next_char_accuracy": 0.259744623655914,
+      "ngram_baselines": {
+        "unigram_nats_per_char": 3.255476556566342,
+        "bigram_nats_per_char": 2.4317889468136276,
+        "unigram_top1_next_char_accuracy": 0.15120967741935484,
+        "bigram_top1_next_char_accuracy": 0.2745295698924731,
+        "smoothing_alpha": 0.5,
+        "matched_evaluated_targets": 2976,
+        "evaluation_positions": "same non-overlapping context-block targets as neural models"
+      },
+      "invariants": {
+        "causal_future_leakage_max_abs": 0.0,
+        "causality_positions_tested": [
+          1,
+          8,
+          16,
+          31
+        ],
+        "causality_error_by_position": {
+          "1": 0.0,
+          "8": 0.0,
+          "16": 0.0,
+          "31": 0.0
+        },
+        "request_state_reset_repeat_max_abs": 0.0
+      },
+      "train_perplexity_char": 15.725399226825985,
+      "validation_perplexity_char": 15.762516489504426,
+      "test_perplexity_char": 15.300050294700506,
+      "train_seconds": 1.8988481870001124,
+      "training_characters_processed": 64000,
+      "training_characters_per_second": 33704.64286621573,
+      "forward_characters_per_second_batch16": 265771.97484177625,
+      "median_step_loss_first_25": 50.95869827270508,
+      "median_step_loss_last_25": 3.2113442420959473,
+      "optimizer_steps_completed": 500,
+      "gradient_norm_median": 2.2951735258102417,
+      "gradient_norm_max": 26.46810531616211,
+      "all_trainable_parameters_received_gradient_first_step": true,
+      "finite_loss_and_gradients_all_steps": true,
+      "sample": "First Citizen:\nBefore we proceed ar ininomene ma we m th me llonsilslly s se we the nimat bat yrithe t me youe se inrers, w wowo ast y ne b ld sptan sth ssis n t ss he ass b, b\n\nhe t we and nsse yon y t tesemass nean ty ase anorer at y tit allius fe th",
+      "checkpoint_sha256": "29f670a5406626aa258496534f93fc4c0b315b6135ce7caad476e2d4ae453761"
+    }
+  ],
+  "scope_warning": "Exploratory character-LM pilot only. It does not validate frontier LLM quality, large-scale scaling, GPU kernels, multilingual/general instruction following, or production GDN-2 performance. Source-repository license metadata is absent and rights review is pending; do not treat this corpus as approved for commercial training."
+}

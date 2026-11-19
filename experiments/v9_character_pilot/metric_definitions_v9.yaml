@@ -1,0 +1,139 @@
+schema_version: '1.0'
+snapshot_date: '2026-11-18'
+status: normative_metric_definition_catalog_not_result_data
+global_rules:
+- Report raw numerator and denominator in addition to derived ratios.
+- Do not compare unlike units or latency definitions.
+- Keep per-user latency separate from aggregate throughput.
+- Use matched hardware, workload, model quality target and measurement boundaries.
+- Where correctness requires a gold/reference label, identify its source and adjudication method.
+metrics:
+- id: quality_at_fixed_compute
+  scope: training_or_inference
+  unit: benchmark_specific_score
+  measurement_method: Evaluate on the same held-out distribution at matched effective training FLOPs or a declared
+    matched inference-compute budget.
+  comparison_basis: Matched total effective compute, data exposure, hardware, evaluator and test distribution; report
+    score and compute separately.
+- id: cost_per_accepted_token
+  scope: speculative_or_multi_stage_generation
+  unit: accelerator_seconds_per_committed_token; optionally currency_per_committed_token
+  numerator: Total measured draft, edit/search, verifier, synchronization, memory movement and host/runtime execution
+    cost required by deployment.
+  denominator: Number of newly committed output tokens.
+  measurement_method: Include every deployed stage; state whether queueing and model loading are included.
+  comparison_basis: Same target model, workload, output-quality/fidelity contract and serving environment.
+- id: draft_acceptance_by_position
+  scope: speculative_generation
+  unit: fraction_by_draft_position
+  numerator: Proposed tokens at position i accepted by the declared verifier/correction rule.
+  denominator: All proposals evaluated at position i.
+  measurement_method: Report numerator, denominator, truncation/stopping policy and per-position curve.
+  comparison_basis: Same target, draft geometry, decoding distribution, request mix and verifier.
+- id: mean_accepted_prefix_length
+  scope: speculative_generation
+  unit: committed_tokens_per_verifier_round
+  numerator: Total target-accepted proposed tokens over measured verifier rounds.
+  denominator: Number of verifier rounds.
+  measurement_method: Report distribution and zero-acceptance rounds; do not substitute for throughput.
+  comparison_basis: Same batch/concurrency, target model, proposal geometry and verification policy.
+- id: state_realization_equivalence
+  scope: stateful_decoding
+  unit: pass_rate_plus_max_abs_and_relative_error
+  measurement_method: Compare post-commit state with reference full forward over the committed token sequence for
+    recurrent state, KV state, position, cache metadata and mode state; define dtype-specific tolerances and reset/rollback
+    tests.
+  comparison_basis: Same checkpoint, input prefix, positions, precision and state initialization.
+- id: correct_token_retention
+  scope: draft_refinement
+  unit: fraction
+  numerator: Initially correct eligible draft tokens retained unchanged in the final output.
+  denominator: All initially correct draft tokens eligible for editing.
+  measurement_method: Correctness labels come from gold/reference tests or a documented independent adjudication
+    protocol.
+  comparison_basis: Same initial drafts, edit budget, stopping rule and correctness oracle.
+- id: edit_damage_rate
+  scope: draft_refinement
+  unit: fraction
+  numerator: Initially correct eligible tokens rendered incorrect by editing.
+  denominator: Initially correct eligible tokens that were edited.
+  measurement_method: Report numerator/denominator and per-position/domain breakdown.
+  comparison_basis: Same initial draft quality, edit eligibility, edit budget and reference oracle.
+- id: correction_precision
+  scope: draft_refinement
+  unit: fraction
+  numerator: Initially incorrect eligible tokens that are corrected.
+  denominator: All edited tokens that the method marks or claims as corrections.
+  measurement_method: Use gold/reference tests or independently adjudicated correctness; define ambiguous cases
+    separately.
+  comparison_basis: Same initial error distribution and edit policy.
+- id: correction_recall
+  scope: draft_refinement
+  unit: fraction
+  numerator: Initially incorrect eligible tokens that are corrected.
+  denominator: All initially incorrect eligible tokens.
+  measurement_method: Use same adjudication as correction_precision.
+  comparison_basis: Same initial error distribution and edit policy.
+- id: refinement_convergence
+  scope: draft_refinement
+  unit: fraction_within_predeclared_iteration_budget
+  numerator: Requests whose refinement process reaches the predeclared convergence criterion within the maximum
+    permitted iterations.
+  denominator: All requests included in the refinement evaluation, including non-converged and timed-out requests.
+  measurement_method: Predeclare the convergence predicate, tolerance, maximum iterations and timeout. Report numerator/denominator
+    and the distribution of iterations among converged requests; classify censored/non-converged requests explicitly.
+  comparison_basis: Same initial drafts, convergence predicate, iteration/compute budget, request distribution and
+    correctness oracle.
+- id: time_to_first_token
+  scope: serving
+  unit: milliseconds
+  measurement_method: Wall-clock request arrival to first user-visible output token; state queueing, prefill and
+    batching boundaries.
+  comparison_basis: Same prompt distribution, queue policy, warm-up, concurrency and serving hardware.
+- id: inter_token_latency
+  scope: serving
+  unit: milliseconds_per_token
+  measurement_method: Report per-request inter-token intervals and aggregate p50/p95/p99; define treatment of pauses
+    and speculative bursts.
+  comparison_basis: Same output length distribution, decode settings, concurrency and measurement window.
+- id: end_to_end_latency
+  scope: serving
+  unit: milliseconds_per_request
+  measurement_method: Request arrival to final output completion; state whether queueing, network, tool calls and
+    postprocessing are included.
+  comparison_basis: Same request mix, concurrency, queueing and system boundary.
+- id: aggregate_throughput
+  scope: serving
+  unit: output_tokens_per_second
+  measurement_method: Total committed output tokens divided by wall-clock measurement interval; include warm/cold
+    policy and concurrency.
+  comparison_basis: Report together with per-user latency and quality under the same request mix.
+- id: energy_per_task
+  scope: training_or_serving
+  unit: joules_per_task_or_joules_per_committed_token
+  measurement_method: Meter measured device/system energy, idle subtraction, sampling interval, meter coverage and
+    boundary. Label nominal-power estimates as estimates.
+  comparison_basis: Same useful work unit, hardware, power-measurement scope, quality and load.
+- id: physical_kv_bytes
+  scope: kv_cache
+  unit: bytes_per_request_and_bytes_per_retained_token
+  measurement_method: Include K/V payload, scales, quantization metadata, indices, centroids, codebooks, allocator
+    slack and auxiliary tables.
+  comparison_basis: Same layers, heads, context length, batch, dtype and cache semantics.
+- id: semantic_unit_coverage
+  scope: kv_cache
+  unit: fraction_of_required_semantic_units_preserved
+  measurement_method: Use a benchmark with annotated units/dependencies; report unit-level recall and false preservation
+    separately.
+  comparison_basis: Same cache budget and task suite; do not infer from token recall alone.
+- id: mode_selection_regret
+  scope: unified_generation_modes
+  unit: benchmark_score_delta_or_cost_delta
+  measurement_method: Difference between selected mode outcome and the best eligible mode measured on the same task
+    under the declared budget; report quality and cost regret separately.
+  comparison_basis: All candidate modes use the same task, budget, checkpoint family and evaluator.
+- id: tool_schema_validity
+  scope: agent_or_structured_generation
+  unit: fraction_of_tool_outputs_passing_schema_and_semantic_checks
+  measurement_method: Report syntactic schema pass, semantic validator pass and execution success separately.
+  comparison_basis: Same tool schemas, argument constraints and tool environment.

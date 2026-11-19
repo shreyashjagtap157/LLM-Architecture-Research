@@ -1,0 +1,1192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LLM Architecture v9 Experiment Manifest",
+  "description": "Immutable identity and protocol for one reproducible architecture experiment. A schema pass is not proof of scientific validity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "run_type",
+    "profile_id",
+    "specification",
+    "source",
+    "dataset",
+    "hardware",
+    "software",
+    "model",
+    "evaluation",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]+$"
+    },
+    "run_type": {
+      "enum": [
+        "pretraining",
+        "continued_pretraining",
+        "sft",
+        "rl",
+        "inference",
+        "evaluation",
+        "ablation",
+        "speculative_decode"
+      ]
+    },
+    "profile_id": {
+      "enum": [
+        "P0",
+        "P1",
+        "P1-LA",
+        "P2",
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "P7",
+        "P8",
+        "P9"
+      ]
+    },
+    "specification": {
+      "$ref": "#/$defs/specification"
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "dataset": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/dataset"
+      }
+    },
+    "hardware": {
+      "$ref": "#/$defs/hardware"
+    },
+    "software": {
+      "$ref": "#/$defs/software"
+    },
+    "model": {
+      "$ref": "#/$defs/model"
+    },
+    "training": {
+      "$ref": "#/$defs/training"
+    },
+    "serving": {
+      "$ref": "#/$defs/serving"
+    },
+    "verification": {
+      "$ref": "#/$defs/verification"
+    },
+    "evaluation": {
+      "$ref": "#/$defs/evaluation"
+    },
+    "artifacts": {
+      "$ref": "#/$defs/artifacts"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "run_type": {
+            "enum": [
+              "pretraining",
+              "continued_pretraining",
+              "sft",
+              "rl"
+            ]
+          }
+        },
+        "required": [
+          "run_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "training"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "run_type": {
+            "enum": [
+              "inference",
+              "evaluation",
+              "ablation",
+              "speculative_decode"
+            ]
+          }
+        },
+        "required": [
+          "run_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "serving"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "profile_id": {
+            "const": "P8"
+          }
+        },
+        "required": [
+          "profile_id"
+        ]
+      },
+      "then": {
+        "required": [
+          "verification"
+        ],
+        "properties": {
+          "verification": {
+            "required": [
+              "draft_model_revision",
+              "draft_geometry",
+              "verifier_algorithm_revision",
+              "state_commit_policy_revision",
+              "proposal_probability_available",
+              "fidelity_claim",
+              "target_checkpoint_sha256",
+              "acceptance_correction_rule",
+              "fidelity_test_revision",
+              "fidelity_test_result",
+              "draft_checkpoint_sha256",
+              "draft_tokenizer_sha256",
+              "draft_config_sha256"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "profile_id": {
+            "const": "P9"
+          }
+        },
+        "required": [
+          "profile_id"
+        ]
+      },
+      "then": {
+        "required": [
+          "verification"
+        ],
+        "properties": {
+          "verification": {
+            "required": [
+              "draft_model_revision",
+              "draft_geometry",
+              "fidelity_claim",
+              "draft_checkpoint_sha256",
+              "draft_tokenizer_sha256",
+              "draft_config_sha256"
+            ],
+            "properties": {
+              "fidelity_claim": {
+                "const": "changed_output"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "profile_id": {
+            "const": "P7"
+          }
+        },
+        "required": [
+          "profile_id"
+        ]
+      },
+      "then": {
+        "required": [
+          "serving"
+        ],
+        "properties": {
+          "serving": {
+            "required": [
+              "generation_modes",
+              "mode_router_revision"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "run_type": {
+            "enum": [
+              "inference",
+              "evaluation",
+              "ablation",
+              "speculative_decode"
+            ]
+          }
+        },
+        "required": [
+          "run_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "model": {
+            "required": [
+              "checkpoint_sha256"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "run_type": {
+            "enum": [
+              "continued_pretraining",
+              "sft",
+              "rl"
+            ]
+          }
+        },
+        "required": [
+          "run_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "training": {
+            "required": [
+              "parent_checkpoint_sha256"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "run_type": {
+            "const": "rl"
+          }
+        },
+        "required": [
+          "run_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "training": {
+            "required": [
+              "reward_model_revision",
+              "reward_data_manifest_sha256"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "profile_id": {
+            "const": "P8"
+          },
+          "verification": {
+            "properties": {
+              "fidelity_claim": {
+                "const": "bounded_approximation"
+              }
+            },
+            "required": [
+              "fidelity_claim"
+            ]
+          }
+        },
+        "required": [
+          "profile_id",
+          "verification"
+        ]
+      },
+      "then": {
+        "properties": {
+          "verification": {
+            "required": [
+              "approximation_metric",
+              "approximation_bound"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "profile_id": {
+            "const": "P8"
+          }
+        },
+        "required": [
+          "profile_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "run_type": {
+            "const": "speculative_decode"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "profile_id": {
+            "const": "P9"
+          }
+        },
+        "required": [
+          "profile_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "run_type": {
+            "const": "speculative_decode"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "profile_id": {
+            "const": "P8"
+          }
+        },
+        "required": [
+          "profile_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "verification": {
+            "properties": {
+              "fidelity_claim": {
+                "enum": [
+                  "exact_target_distribution",
+                  "deterministic_target_rule",
+                  "bounded_approximation",
+                  "unverified"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$"
+    },
+    "specification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "file_name",
+        "sha256"
+      ],
+      "properties": {
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "file_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "commit",
+        "dirty_tree"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{40,64}$"
+        },
+        "dirty_tree": {
+          "type": "boolean"
+        },
+        "patch_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "dirty_tree": {
+                "const": true
+              }
+            },
+            "required": [
+              "dirty_tree"
+            ]
+          },
+          "then": {
+            "required": [
+              "patch_sha256"
+            ]
+          }
+        }
+      ]
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "manifest_sha256",
+        "role",
+        "license_status",
+        "provenance_uri",
+        "allowed_uses",
+        "rights_review_status"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "role": {
+          "enum": [
+            "training",
+            "validation",
+            "test",
+            "benchmark",
+            "reward"
+          ]
+        },
+        "license_status": {
+          "enum": [
+            "approved_for_training",
+            "evaluation_only",
+            "restricted",
+            "unknown"
+          ]
+        },
+        "provenance_uri": {
+          "type": "string",
+          "minLength": 1
+        },
+        "filter_revision": {
+          "type": "string"
+        },
+        "dedup_revision": {
+          "type": "string"
+        },
+        "allowed_uses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "training",
+              "validation",
+              "model_selection",
+              "evaluation",
+              "reward_model_training",
+              "inference",
+              "redistribution"
+            ]
+          }
+        },
+        "rights_review_status": {
+          "enum": [
+            "approved_for_declared_uses",
+            "pending",
+            "denied"
+          ]
+        }
+      }
+    },
+    "hardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compute_device_type",
+        "compute_device_model",
+        "compute_device_count",
+        "device_memory_type",
+        "device_memory_per_device_gib",
+        "host_ram_gib",
+        "interconnect",
+        "topology",
+        "power_measurement",
+        "device_inventory_manifest_sha256"
+      ],
+      "properties": {
+        "compute_device_type": {
+          "enum": [
+            "cpu_only",
+            "accelerator_only",
+            "heterogeneous",
+            "managed_accelerator"
+          ]
+        },
+        "compute_device_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "compute_device_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "device_memory_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "device_memory_per_device_gib": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "host_ram_gib": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "interconnect": {
+          "type": "string",
+          "minLength": 1
+        },
+        "topology": {
+          "type": "string",
+          "minLength": 1
+        },
+        "power_measurement": {
+          "enum": [
+            "measured_device",
+            "measured_system",
+            "estimated",
+            "unavailable"
+          ]
+        },
+        "power_meter_scope": {
+          "type": "string"
+        },
+        "device_inventory_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "compute_device_type": {
+                "const": "cpu_only"
+              }
+            },
+            "required": [
+              "compute_device_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "device_memory_type": {
+                "const": "system_ram"
+              },
+              "device_memory_per_device_gib": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "compute_device_type": {
+                "enum": [
+                  "accelerator_only",
+                  "managed_accelerator"
+                ]
+              }
+            },
+            "required": [
+              "compute_device_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "device_memory_per_device_gib": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "software": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "framework",
+        "runtime",
+        "driver",
+        "compiler",
+        "environment_kind",
+        "environment_digest",
+        "dependency_lock_sha256",
+        "kernel_revisions"
+      ],
+      "properties": {
+        "framework": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "driver": {
+          "type": "string",
+          "minLength": 1
+        },
+        "compiler": {
+          "type": "string",
+          "minLength": 1
+        },
+        "environment_kind": {
+          "enum": [
+            "container",
+            "bare_metal",
+            "managed_service"
+          ]
+        },
+        "environment_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "container_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-fA-F0-9]{64}$"
+        },
+        "dependency_lock_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "kernel_revisions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "environment_kind": {
+                "const": "container"
+              }
+            },
+            "required": [
+              "environment_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "container_digest"
+            ]
+          }
+        }
+      ]
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total_parameters",
+        "active_parameters",
+        "tokenizer_revision",
+        "context_length",
+        "precision",
+        "quantization_map",
+        "tokenizer_sha256",
+        "architecture_config_sha256"
+      ],
+      "properties": {
+        "total_parameters": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "active_parameters": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tokenizer_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "precision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantization_map": {
+          "type": "string"
+        },
+        "checkpoint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parent_checkpoint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "architecture_config_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "tokenizer_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "training": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "optimizer",
+        "scheduler",
+        "global_batch_tokens",
+        "training_tokens",
+        "seed",
+        "precision",
+        "max_sequence_length",
+        "gradient_checkpointing",
+        "optimizer_config",
+        "learning_rate_schedule"
+      ],
+      "properties": {
+        "optimizer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "optimizer_config": {
+          "type": "object",
+          "minProperties": 1
+        },
+        "scheduler": {
+          "type": "string",
+          "minLength": 1
+        },
+        "learning_rate_schedule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "global_batch_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "training_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "precision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "max_sequence_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "gradient_checkpointing": {
+          "type": "boolean"
+        },
+        "parent_checkpoint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "reward_model_revision": {
+          "type": "string"
+        },
+        "reward_data_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "effective_training_flops": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "serving": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "batch_size",
+        "concurrency",
+        "prompt_length_distribution",
+        "output_length_distribution",
+        "decoding_settings",
+        "cache_policy_revision",
+        "generation_mode",
+        "warmup_iterations",
+        "measurement_iterations",
+        "latency_definition"
+      ],
+      "properties": {
+        "batch_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "concurrency": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prompt_length_distribution": {
+          "type": "string",
+          "minLength": 1
+        },
+        "output_length_distribution": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decoding_settings": {
+          "type": "object",
+          "minProperties": 1
+        },
+        "cache_policy_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation_mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation_modes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "mode_router_revision": {
+          "type": "string"
+        },
+        "warmup_iterations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "measurement_iterations": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "latency_definition": {
+          "enum": [
+            "time_to_first_token",
+            "inter_token_latency",
+            "end_to_end",
+            "queue_inclusive_end_to_end",
+            "multiple_separately_reported"
+          ]
+        },
+        "energy_meter_scope": {
+          "type": "string"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fidelity_claim"
+      ],
+      "properties": {
+        "fidelity_claim": {
+          "enum": [
+            "exact_target_distribution",
+            "deterministic_target_rule",
+            "bounded_approximation",
+            "changed_output",
+            "not_applicable",
+            "unverified"
+          ]
+        },
+        "draft_model_revision": {
+          "type": "string"
+        },
+        "draft_geometry": {
+          "type": "string"
+        },
+        "verifier_algorithm_revision": {
+          "type": "string"
+        },
+        "state_commit_policy_revision": {
+          "type": "string"
+        },
+        "proposal_probability_available": {
+          "type": "boolean"
+        },
+        "acceptance_correction_rule": {
+          "type": "string"
+        },
+        "target_checkpoint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "fidelity_test_revision": {
+          "type": "string"
+        },
+        "fidelity_test_result": {
+          "enum": [
+            "passed",
+            "failed",
+            "not_run",
+            "not_applicable"
+          ]
+        },
+        "draft_checkpoint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "draft_tokenizer_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "draft_config_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "approximation_metric": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approximation_bound": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "benchmark_suite",
+        "grader_revision",
+        "sample_count",
+        "repetitions",
+        "confidence_interval_method",
+        "metrics"
+      ],
+      "properties": {
+        "benchmark_suite": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "grader_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sample_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "confidence_interval_method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "value",
+              "unit",
+              "protocol",
+              "value_kind"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "value": {
+                "type": [
+                  "number",
+                  "string",
+                  "boolean"
+                ]
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "protocol": {
+                "type": "string",
+                "minLength": 1
+              },
+              "raw_result_sha256": {
+                "$ref": "#/$defs/sha256"
+              },
+              "numerator": {
+                "type": "number",
+                "minimum": 0
+              },
+              "denominator": {
+                "type": "number",
+                "minimum": 0
+              },
+              "replicate_values": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "confidence_interval": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "lower",
+                  "upper",
+                  "confidence_level",
+                  "method"
+                ],
+                "properties": {
+                  "lower": {
+                    "type": "number"
+                  },
+                  "upper": {
+                    "type": "number"
+                  },
+                  "confidence_level": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "exclusiveMaximum": 1
+                  },
+                  "method": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "value_kind": {
+                "enum": [
+                  "ratio",
+                  "scalar",
+                  "count",
+                  "status",
+                  "distribution"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "value_kind": {
+                      "const": "ratio"
+                    }
+                  },
+                  "required": [
+                    "value_kind"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "numerator",
+                    "denominator"
+                  ]
+                }
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        "statistical_analysis_revision": {
+          "type": "string"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "configuration_sha256",
+        "raw_logs_sha256"
+      ],
+      "properties": {
+        "configuration_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "raw_logs_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "checkpoint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "trace_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "report_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

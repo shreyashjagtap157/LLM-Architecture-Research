@@ -1,0 +1,37 @@
+{
+  "format": "llm-text-split-bundle-v1",
+  "dataset_id": "local-fixture/tinyshakespeare-excerpt",
+  "configuration": "exploratory-80-10-10",
+  "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "text_field": "text",
+  "source_uri": "https://github.com/karpathy/char-rnn/blob/master/data/tinyshakespeare/input.txt",
+  "library": "datasets",
+  "library_version": null,
+  "rights_review_status": "pending",
+  "license_statement": null,
+  "allowed_uses": [],
+  "review_note": "Synthetic bundle-loader smoke test only; not a licensing determination.",
+  "splits": {
+    "train": {
+      "file": "train.txt",
+      "rows": 1,
+      "characters": 23940,
+      "bytes": 23940,
+      "sha256": "acf2f9ac699b39d4fb01ffeeeee43139d5d6664f680fbef703de2783ecd35ca8"
+    },
+    "validation": {
+      "file": "validation.txt",
+      "rows": 1,
+      "characters": 2993,
+      "bytes": 2993,
+      "sha256": "54b8e1a954b51a3e254f6a1e5da9b48138e71ddb3896c969ca81f01db9e38315"
+    },
+    "test": {
+      "file": "test.txt",
+      "rows": 1,
+      "characters": 2993,
+      "bytes": 2993,
+      "sha256": "567dbc4081adaa59258e3f4b036fa9a41fed2c8f70151c2d7bfaea0382117bad"
+    }
+  }
+}

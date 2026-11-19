@@ -1,0 +1,87 @@
+# INCOMPLETE TEMPLATE — this is not a run manifest and must fail preflight until populated.
+schema_version: "1.0"
+run_id: REPLACE_ME_WITH_UNIQUE_IMMUTABLE_RUN_ID
+run_type: evaluation                 # pretraining | continued_pretraining | sft | rl | inference | evaluation | ablation | speculative_decode
+profile_id: P0                       # select one defined profile
+specification:
+  revision: v9
+  file_name: SOTA_LLM_Architecture_v9.md
+  sha256: REPLACE_ME_WITH_64_HEX_SHA256
+source:
+  repository: REPLACE_ME_WITH_REPOSITORY_OR_IMMUTABLE_SOURCE_URI
+  commit: REPLACE_ME_WITH_40_TO_64_HEX_COMMIT
+  dirty_tree: false
+  # patch_sha256 is required when dirty_tree is true.
+dataset:
+  - name: REPLACE_ME
+    version: REPLACE_ME
+    manifest_sha256: REPLACE_ME_WITH_64_HEX_SHA256
+    role: test
+    license_status: evaluation_only
+    allowed_uses: [evaluation]
+    rights_review_status: pending
+hardware:
+  compute_device_type: cpu_only
+  compute_device_model: REPLACE_ME
+  compute_device_count: 1
+  device_memory_type: system_ram
+  device_memory_per_device_gib: null
+  device_inventory_manifest_sha256: REPLACE_ME_WITH_64_HEX_SHA256
+  host_ram_gib: null
+  interconnect: not_applicable_cpu_only
+  topology: single_host
+  power_measurement: unavailable
+software:
+  framework: REPLACE_ME
+  runtime: REPLACE_ME
+  driver: REPLACE_ME
+  compiler: REPLACE_ME
+  environment_kind: bare_metal
+  environment_digest: REPLACE_ME_WITH_64_HEX_SHA256
+  dependency_lock_sha256: REPLACE_ME_WITH_64_HEX_SHA256
+  kernel_revisions: []
+model:
+  total_parameters: null
+  active_parameters: null
+  tokenizer_revision: REPLACE_ME
+  tokenizer_sha256: REPLACE_ME_WITH_64_HEX_SHA256
+  architecture_config_sha256: REPLACE_ME_WITH_64_HEX_SHA256
+  context_length: null
+  precision: REPLACE_ME
+  quantization_map: none_or_explicit_map
+serving:
+  batch_size: null
+  concurrency: null
+  prompt_length_distribution: REPLACE_ME
+  output_length_distribution: REPLACE_ME
+  decoding_settings: {}
+  cache_policy_revision: REPLACE_ME
+  generation_mode: autoregressive
+  warmup_iterations: null
+  measurement_iterations: null
+  latency_definition: end_to_end
+evaluation:
+  benchmark_suite: [REPLACE_ME]
+  grader_revision: REPLACE_ME
+  sample_count: null
+  repetitions: null
+  confidence_interval_method: REPLACE_ME
+  metrics: []
+  # Example (uncomment and replace for an actual metric):
+  # - name: exact_match
+  #   value_kind: ratio
+  #   value: 0.0
+  #   numerator: 0
+  #   denominator: 0
+  #   unit: fraction
+  #   protocol: REPLACE_ME_WITH_GRADER_AND_AGGREGATION_PROTOCOL
+  #   confidence_interval:
+  #     lower: 0.0
+  #     upper: 0.0
+  #     confidence_level: 0.95
+  #     method: bootstrap
+  # A zero denominator must use value: "undefined", never 0.0.
+artifacts:
+  configuration_sha256: REPLACE_ME_WITH_64_HEX_SHA256
+  raw_logs_sha256: REPLACE_ME_WITH_64_HEX_SHA256
+notes: Hash the completed manifest externally in a separate checksums sidecar; never embed a manifest self-hash. Replace every placeholder; add the training or verification object required by the run type/profile; validate before launch.

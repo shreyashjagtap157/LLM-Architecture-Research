@@ -1,0 +1,134 @@
+schema_version: '1.0'
+snapshot_date: '2026-11-18'
+status: gated_research_roadmap_not_execution_schedule
+global_stop_rules:
+- Do not invent hardware, model scale, data rights, or compute values.
+- Do not run a higher-cost stage until its predecessor has passed.
+- Keep full-attention/full-cache P0 as an always-available control.
+- Promote only on predeclared quality, cost, correctness, safety, and statistical gates.
+- Retain negative and inconclusive results.
+stages:
+- id: G0
+  name: Declare execution envelope
+  depends_on: []
+  required_inputs:
+  - target_workload
+  - accelerator_model_and_count
+  - HBM_and_host_RAM
+  - interconnect
+  - training_compute_budget
+  - model_parameter_budget
+  - dataset_manifest_and_license_approval
+  - latency_and_cost_targets
+  - evaluation_protocol
+  exit_gate: All required inputs have immutable references; no placeholders remain.
+- id: G1
+  name: P0 dense reference
+  depends_on:
+  - G0
+  profiles:
+  - P0
+  required_runs:
+  - training_or_checkpoint_identity
+  - full_attention_full_cache_inference
+  - held_out_evaluation
+  exit_gate: Baseline reproducible; correctness, quality, throughput, latency, memory and energy protocols recorded.
+- id: G2
+  name: P1 recurrent/attention operator pilot
+  depends_on:
+  - G1
+  profiles:
+  - P1
+  candidates:
+  - GDN-2
+  - Muir
+  - Mamba-2
+  - Mamba-3
+  exit_gate: Operator numerical correctness, state reset/rollback, training stability and matched P0 evaluation
+    pass.
+- id: G3
+  name: P1-LA local/global control
+  depends_on:
+  - G1
+  profiles:
+  - P1-LA
+  exit_gate: Matched compute and sequence-length comparison against P0 and P1.
+- id: G4
+  name: Select sequence path
+  depends_on:
+  - G2
+  - G3
+  exit_gate: Choose Pareto-feasible candidate or retain P0; record uncertainty and rejected alternatives.
+- id: G5
+  name: P2 sparse/compressed attention and KV policies
+  depends_on:
+  - G4
+  profiles:
+  - P2
+  exit_gate: Full-attention fallback, cache-state correctness, long-context and semantic-unit tests pass; cache
+    policies measured independently.
+- id: G6
+  name: P3 capacity and routing
+  depends_on:
+  - G4
+  profiles:
+  - P3
+  exit_gate: Expert quality, overflow, load balance, communication and serving cost measured; dense FFN remains
+    comparator.
+- id: G7
+  name: P4 residual and auxiliary prediction
+  depends_on:
+  - G4
+  profiles:
+  - P4
+  exit_gate: One factor at a time initially; residual stability, MTP/draft utility and no regression established.
+- id: G8
+  name: P5 memory and reasoning application
+  depends_on:
+  - G1
+  profiles:
+  - P5
+  exit_gate: Tenant isolation, state lifecycle, deletion, provenance, retrieval accuracy and tool safety pass.
+- id: G9
+  name: P6 masked diffusion challenger
+  depends_on:
+  - G1
+  profiles:
+  - P6
+  exit_gate: Separate checkpoint and objective; compare at declared compute and latency budgets.
+- id: G10
+  name: P7 unified tri-mode challenger
+  depends_on:
+  - G1
+  profiles:
+  - P7
+  exit_gate: Mode-router regret, calibration, per-mode quality and end-to-end cost reported.
+- id: G11
+  name: P8 diffusion draft and AR verification
+  depends_on:
+  - G1
+  profiles:
+  - P8
+  exit_gate: Representability, verifiability, state-realizability and profitability all pass; exact fidelity is
+    claimed only if its acceptance/correction proof and tests pass.
+- id: G12
+  name: P9 AR-seeded diffusion refinement
+  depends_on:
+  - G1
+  profiles:
+  - P9
+  exit_gate: Changed-output semantics explicit; edit damage, correction quality and fixed-cost quality measured.
+- id: G13
+  name: Confirmatory integration and Pareto selection
+  depends_on:
+  - G5
+  - G6
+  - G7
+  - G8
+  optional_dependencies:
+  - G9
+  - G10
+  - G11
+  - G12
+  exit_gate: Confirmatory holdout, interaction tests, full-system cost and safety audits pass; simplest feasible
+    Pareto candidate selected.

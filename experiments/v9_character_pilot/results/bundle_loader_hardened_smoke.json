@@ -1,0 +1,155 @@
+{
+  "title": "v9 CPU architecture feasibility pilot",
+  "run_class": "exploratory_small_scale_reference_training_not_frontier_validation",
+  "operator_algebra_checks": {
+    "gdn2_rank_one_vs_explicit_matrix_max_abs_error": 2.220446049250313e-16,
+    "pass": true
+  },
+  "implementation_scope": {
+    "P0": "two dense causal attention blocks with feed-forward sublayers",
+    "P1": "one GDN-2-inspired recurrent reference operator plus one dense attention block; simplified projections/gates; not official GDN-2 implementation",
+    "P1-LA": "one 16-token local causal attention block plus one dense global attention block; not an Inkling 2 reproduction"
+  },
+  "run_timestamp_utc": "2026-11-18T09:02:02Z",
+  "environment": {
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu",
+    "device": "cpu",
+    "cpu_count": 3,
+    "threads": 1,
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41"
+  },
+  "config": {
+    "seeds": [
+      903341
+    ],
+    "d_model": 64,
+    "heads": 4,
+    "layers": 2,
+    "ffn_hidden_P0_P1LA": 128,
+    "ffn_hidden_P1": 80,
+    "context": 32,
+    "batch_size": 4,
+    "steps": 1,
+    "eval_interval": 1,
+    "lr": 0.0003
+  },
+  "dataset": {
+    "format": "llm-text-split-bundle-v1",
+    "dataset_id": "local-fixture/tinyshakespeare-excerpt",
+    "configuration": "exploratory-80-10-10",
+    "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "text_field": "text",
+    "source_uri": "https://github.com/karpathy/char-rnn/blob/master/data/tinyshakespeare/input.txt",
+    "library": "datasets",
+    "library_version": null,
+    "rights_review_status": "pending",
+    "license_statement": null,
+    "allowed_uses": [],
+    "review_note": "Synthetic bundle-loader smoke test only; not a licensing determination.",
+    "splits": {
+      "train": {
+        "file": "train.txt",
+        "rows": 1,
+        "characters": 23940,
+        "bytes": 23940,
+        "sha256": "acf2f9ac699b39d4fb01ffeeeee43139d5d6664f680fbef703de2783ecd35ca8"
+      },
+      "validation": {
+        "file": "validation.txt",
+        "rows": 1,
+        "characters": 2993,
+        "bytes": 2993,
+        "sha256": "54b8e1a954b51a3e254f6a1e5da9b48138e71ddb3896c969ca81f01db9e38315"
+      },
+      "test": {
+        "file": "test.txt",
+        "rows": 1,
+        "characters": 2993,
+        "bytes": 2993,
+        "sha256": "567dbc4081adaa59258e3f4b036fa9a41fed2c8f70151c2d7bfaea0382117bad"
+      }
+    },
+    "local_bundle_dir": "/mnt/data/llm_arch_test/results/local_split_bundle_smoke",
+    "manifest_sha256_verified": true,
+    "manifest_sha256": "ee80e68822789366182e890d8c81bbff471a1840f823944fa6926588835ec2b4",
+    "local_split_sha256_verified": true,
+    "split_method": "official train/validation/test splits supplied by a hash-verified dataset bundle",
+    "counts": {
+      "characters_total": 29926,
+      "train": 23940,
+      "validation": 2993,
+      "test": 2993,
+      "vocabulary": 58,
+      "unknown_validation_test_characters": 0
+    }
+  },
+  "ngram_baselines": {
+    "unigram_nats_per_char": 3.255476556566342,
+    "bigram_nats_per_char": 2.4317889468136276,
+    "unigram_top1_next_char_accuracy": 0.15120967741935484,
+    "bigram_top1_next_char_accuracy": 0.2745295698924731,
+    "smoothing_alpha": 0.5,
+    "matched_evaluated_targets": 2976,
+    "evaluation_positions": "same non-overlapping context-block targets as neural models"
+  },
+  "results": [
+    {
+      "profile": "P0",
+      "seed": 903341,
+      "parameters": 72832,
+      "selected_best_step": 1,
+      "initial_val_nats_per_char": 58.897315979003906,
+      "train_nats_per_char": 58.52554387587277,
+      "validation_nats_per_char": 58.46753204509776,
+      "test_nats_per_char": 58.757606260238155,
+      "train_evaluated_characters": 23936,
+      "validation_evaluated_characters": 2976,
+      "test_evaluated_characters": 2976,
+      "validation_top1_next_char_accuracy": 0.02217741935483871,
+      "test_top1_next_char_accuracy": 0.02217741935483871,
+      "ngram_baselines": {
+        "unigram_nats_per_char": 3.255476556566342,
+        "bigram_nats_per_char": 2.4317889468136276,
+        "unigram_top1_next_char_accuracy": 0.15120967741935484,
+        "bigram_top1_next_char_accuracy": 0.2745295698924731,
+        "smoothing_alpha": 0.5,
+        "matched_evaluated_targets": 2976,
+        "evaluation_positions": "same non-overlapping context-block targets as neural models"
+      },
+      "invariants": {
+        "causal_future_leakage_max_abs": 0.0,
+        "causality_positions_tested": [
+          1,
+          8,
+          16,
+          31
+        ],
+        "causality_error_by_position": {
+          "1": 0.0,
+          "8": 0.0,
+          "16": 0.0,
+          "31": 0.0
+        },
+        "request_state_reset_repeat_max_abs": 0.0
+      },
+      "train_perplexity_char": 485165195.4097903,
+      "validation_perplexity_char": 485165195.4097903,
+      "test_perplexity_char": 485165195.4097903,
+      "train_seconds": 0.02178114199978154,
+      "training_characters_processed": 128,
+      "training_characters_per_second": 5876.643199024358,
+      "forward_characters_per_second_batch16": 268244.5125585226,
+      "median_step_loss_first_25": 59.41546630859375,
+      "median_step_loss_last_25": 59.41546630859375,
+      "optimizer_steps_completed": 1,
+      "gradient_norm_median": 14.719769477844238,
+      "gradient_norm_max": 14.719769477844238,
+      "all_trainable_parameters_received_gradient_first_step": true,
+      "finite_loss_and_gradients_all_steps": true,
+      "sample": "First Citizen:\nBefore we proceeddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "checkpoint_sha256": "b8a261b1a065cce0ed39eac7b5c63a236ba599111bf6cc20c771edc00a0cec7d"
+    }
+  ],
+  "scope_warning": "Exploratory character-LM pilot only. It does not validate frontier LLM quality, large-scale scaling, GPU kernels, multilingual/general instruction following, or production GDN-2 performance. Source-repository license metadata is absent and rights review is pending; do not treat this corpus as approved for commercial training."
+}

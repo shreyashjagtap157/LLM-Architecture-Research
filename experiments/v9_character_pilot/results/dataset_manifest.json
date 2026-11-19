@@ -1,0 +1,21 @@
+{
+  "source_name": "Tiny Shakespeare text from karpathy/char-rnn data/tinyshakespeare/input.txt",
+  "source_url": "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt",
+  "repository_blob_sha": "7dcb3a2d4cc3b48b6283dd46870bfeb78f88aac9",
+  "source_file_bytes_reported_online": 1115394,
+  "local_sample_bytes": 29926,
+  "local_sample_sha256": "3229111e25b798391b379a7707aad6b45cb8cfe8d26e0ec463a2120ec15e18be",
+  "license_note": "Source repository has no declared license metadata. Shakespeare's underlying works are public domain, but transcription/edition rights have not been independently reviewed; commercial training approval is not established.",
+  "rights_review_status": "pending",
+  "sample_materialization_note": "A 29,926-byte excerpt was locally materialized from the GitHub blob response. The local SHA-256 locks the exact sample used; byte-for-byte equivalence to the complete upstream file was not independently verified.",
+  "sample_fraction_of_upstream_file": 0.02682998115464132,
+  "split_method": "sequential 80/10/10 split of the locally recovered 29.9 KB excerpt; not the official upstream split",
+  "counts": {
+    "characters_total": 29926,
+    "train": 23940,
+    "validation": 2993,
+    "test": 2993,
+    "vocabulary": 58,
+    "unknown_validation_test_characters": 0
+  }
+}
