@@ -62,3 +62,13 @@ The recovered runtime contained the v10 specification and the v9 pilot archive, 
 ## GitHub publication and safety
 
 The intended target now exists and contains the project on `main`; publication is complete. See `PUBLISHING.md` for safe synchronization instructions. Do not push into the separate `Dynamic-Neural-Computing` project. GitHub currently reports this repository as public, while `NOTICE.md` still records unresolved data/source redistribution rights. Treat visibility as an open publication-risk decision; no rights clearance is implied by the successful push.
+
+
+## Latest validation checkpoint — 2026-11-19
+
+- GitHub Actions run `44542481592` passed on the dataset-rights preflight commit.
+- The complete V11 prototype test directory passed in CI: **29 tests**.
+- The v9 regression suite passed: **44 tests**.
+- The v9 artifact verifier passed: **137 checks**.
+- SHA-256 manifest regeneration and verification passed; the bot advanced `main` to `5b00e36aba6c69d7ca2ad1403952412a0ceabad0` with 158 manifest entries.
+- No corpus was downloaded or trained on; no dataset has been approved by the rights review. The rights checker only validates attestation structure and does not constitute legal clearance.

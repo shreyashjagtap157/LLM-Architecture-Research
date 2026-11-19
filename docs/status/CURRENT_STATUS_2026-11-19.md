@@ -93,3 +93,8 @@ A preliminary source-card/licence review is recorded in `docs/research/DATASET_R
 ## Dataset rights preflight — 2026-11-19
 
 Added `experiments/v11_prototypes/dataset_rights_gate.py` and a pending JSON manifest template. The preflight requires a full dataset commit SHA, hashes of the dataset-card/terms snapshots, per-included-source immutable identifiers and licence-evidence hashes, an approved reviewer/use record, and a separate approved privacy review. Its output is explicitly `ATTESTATIONS_PRESENT_FOR_REQUESTED_USE`, not legal clearance. The default template is pending and must fail closed. Local tests for this gate: 10 passed; total V11 prototype tests: 29 passed. The checker does not fetch datasets or validate the truth of human attestations.
+
+
+## Latest GitHub Actions verification — 2026-11-19
+
+The rights-preflight commit `9c3326272613465ed904bf1cfbf9095c94dc54a4` completed GitHub Actions run **44542481592** with conclusion `success`. The workflow ran the full `experiments/v11_prototypes/tests` directory (29 tests), the v9 regression suite (44 tests), v9 artifact verification (137 checks), regenerated and verified the SHA-256 manifest, and checked the dataset-exporter help path. The checksum bot advanced `main` to `5b00e36aba6c69d7ca2ad1403952412a0ceabad0`; at that head the manifest contains **158 file entries**. These automated tests verify code and archived artifacts; they do not approve a dataset, train a model or reproduce the missing historical V11 runs.

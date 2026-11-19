@@ -4,6 +4,10 @@
 
 The repository is published on GitHub `main`. The original bundle history was preserved. The current isolated hashed n-gram adapter and collision-audit utilities passed **19 synthetic tests** locally; this does not validate model quality or reproduce the missing historical V11 code. The original v9 regression suite passed **44 tests**, and the v9 artifact verifier passed **137 checks**. GitHub Actions has passed on the initial prototype commit; the expanded 19-test CI run for the collision audit must be checked separately.
 
+## Latest GitHub validation — 2026-11-19
+
+GitHub Actions run `44542481592` passed on the dataset-rights preflight commit. It ran the full prototype test directory (**29 passed**), v9 regression tests (**44 passed**), v9 artifact verification (**137 checks passed**), SHA-256 manifest regeneration/verification, and the safe dataset-exporter CLI check. The manifest bot advanced `main` to `5b00e36aba6c69d7ca2ad1403952412a0ceabad0` and the manifest contains 158 entries at that verified head. This CI run does not establish dataset rights or model-quality/efficiency results.
+
 ## Snapshot identity
 
 - Repository: `LLM-Architecture-Research`

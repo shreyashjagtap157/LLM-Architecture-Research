@@ -12,6 +12,9 @@ All notable research/specification transitions are recorded here at a high level
 
 ## 2026-11-19 — Dataset rights preflight utility
 
+- GitHub Actions run 44542481592 passed on the rights-preflight commit: 29 V11 prototype tests, 44 v9 regression tests, 137 v9 artifact checks, manifest regeneration/check and safe exporter CLI validation.
+- Checksum automation advanced main to 5b00e36aba6c69d7ca2ad1403952412a0ceabad0 with 158 manifest entries.
+
 - Added a fail-closed manifest checker for immutable dataset revisions, dataset-card/terms hashes, every included upstream source and its own licence-evidence hash, specifically approved intended uses, reviewer identity and privacy-review evidence.
 - Added a default-pending JSON manifest template; it cannot pass until a human-reviewed record is complete.
 - Added 10 tests for pending/approved states, use restrictions, per-source evidence, duplicate source IDs, immutable revision format and privacy review.
